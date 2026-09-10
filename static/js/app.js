@@ -153,6 +153,16 @@ function setupEventListeners() {
       const data = await res.json();
       if (data.success) {
         showToast(data.message, "success");
+        if (window.PasswordCredential && navigator.credentials) {
+          try {
+            const cred = new PasswordCredential({
+              id: username,
+              password: password,
+              name: data.user.name
+            });
+            navigator.credentials.store(cred);
+          } catch (err) {}
+        }
         if (loginPasswordInput) loginPasswordInput.value = "";
         setAuthenticatedUser(data.user);
       } else {

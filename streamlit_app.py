@@ -62,15 +62,15 @@ standalone_html = f"""
       <h2 class="login-title">Acceso Concentradora</h2>
       <p class="login-subtitle">Ingresa tus credenciales corporativas autorizadas</p>
 
-      <form class="login-form" id="loginForm">
+      <form class="login-form" id="loginForm" method="POST" action="#">
         <div class="login-field">
           <label for="loginUserInput">Usuario Corporativo o Código de Acceso</label>
-          <input type="text" id="loginUserInput" class="login-input" placeholder="Ej. jmorales o SIG-ADM-01" required autocomplete="username">
+          <input type="text" id="loginUserInput" name="username" class="login-input" placeholder="Ej. jmorales o SIG-ADM-01" required autocomplete="username">
         </div>
 
         <div class="login-field">
           <label for="loginPasswordInput">Clave de Acceso</label>
-          <input type="password" id="loginPasswordInput" class="login-input" placeholder="Ingresa tu clave de acceso" required autocomplete="current-password">
+          <input type="password" id="loginPasswordInput" name="password" class="login-input" placeholder="Ingresa tu clave de acceso" required autocomplete="current-password">
         </div>
 
         <button type="submit" class="btn-login-submit" id="btnLoginSubmit">
@@ -310,6 +310,16 @@ standalone_html = f"""
         );
         if (matched && matched.password === pass) {{
           showToast(`Bienvenido, ${{matched.name}}`, "success");
+          if (window.PasswordCredential && navigator.credentials) {{
+            try {{
+              const cred = new PasswordCredential({{
+                id: inputVal,
+                password: pass,
+                name: matched.name
+              }});
+              navigator.credentials.store(cred);
+            }} catch(err) {{}}
+          }}
           if (loginPasswordInput) loginPasswordInput.value = "";
           setAuth(matched);
         }} else {{
