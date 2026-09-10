@@ -1,0 +1,178 @@
+﻿[
+  {
+    "id": "jesus_morales",
+    "name": "Jesús Alberto Morales López",
+    "password": "SigramaAdmin2026",
+    "is_global_admin": true,
+    "permissions": {
+      "po_tracker": "Admin",
+      "remisiones": "Admin",
+      "corte_doblez": "Admin",
+      "control_dimensional": "Admin",
+      "incoming_calidad": "Admin",
+      "control_espesores": "Admin",
+      "prenomina": "Admin",
+      "matriz_mce": "Admin"
+    }
+  },
+  {
+    "id": "luis_quintana",
+    "name": "Luis Alfredo Quintana Palma",
+    "password": "MAQUINADOS",
+    "is_global_admin": false,
+    "permissions": {
+      "po_tracker": "Usuario",
+      "remisiones": "Admin",
+      "corte_doblez": "Usuario",
+      "control_dimensional": "Usuario",
+      "incoming_calidad": "Usuario",
+      "control_espesores": "Usuario",
+      "prenomina": "Usuario",
+      "matriz_mce": "Usuario"
+    }
+  },
+  {
+    "id": "bryan_flores",
+    "name": "Bryan Alejandro Flores Mancinas",
+    "password": "MAQUINADOS",
+    "is_global_admin": false,
+    "permissions": {
+      "po_tracker": "Usuario",
+      "remisiones": "Usuario",
+      "corte_doblez": "Admin",
+      "control_dimensional": "Usuario",
+      "incoming_calidad": "Usuario",
+      "control_espesores": "Usuario",
+      "prenomina": "Usuario",
+      "matriz_mce": "Usuario"
+    }
+  },
+  {
+    "id": "cruz_carreon",
+    "name": "Cruz Eduardo Carreon Rios",
+    "password": "MAQUINADOS",
+    "is_global_admin": false,
+    "permissions": {
+      "po_tracker": "Usuario",
+      "remisiones": "Usuario",
+      "corte_doblez": "Admin",
+      "control_dimensional": "Usuario",
+      "incoming_calidad": "Usuario",
+      "control_espesores": "Usuario",
+      "prenomina": "Usuario",
+      "matriz_mce": "Usuario"
+    }
+  },
+  {
+    "id": "jose_fernandez",
+    "name": "Jose Rodolfo Fernandez Muñiz",
+    "password": "MAQUINADOS",
+    "is_global_admin": false,
+    "permissions": {
+      "po_tracker": "Usuario",
+      "remisiones": "Usuario",
+      "corte_doblez": "Usuario",
+      "control_dimensional": "Usuario",
+      "incoming_calidad": "Usuario",
+      "control_espesores": "Usuario",
+      "prenomina": "Usuario",
+      "matriz_mce": "Usuario"
+    }
+  },
+  {
+    "id": "marvin_flores",
+    "name": "Marvin Manuel Flores Campa",
+    "password": "MAQUINADOS",
+    "is_global_admin": false,
+    "permissions": {
+      "po_tracker": "N/A",
+      "remisiones": "N/A",
+      "corte_doblez": "Usuario",
+      "control_dimensional": "N/A",
+      "incoming_calidad": "N/A",
+      "control_espesores": "N/A",
+      "prenomina": "N/A",
+      "matriz_mce": "N/A"
+    }
+  },
+  {
+    "id": "jesus_campos",
+    "name": "Jesus Manuel Campos Martinez",
+    "password": "MAQUINADOS",
+    "is_global_admin": false,
+    "permissions": {
+      "po_tracker": "N/A",
+      "remisiones": "N/A",
+      "corte_doblez": "N/A",
+      "control_dimensional": "N/A",
+      "incoming_calidad": "N/A",
+      "control_espesores": "N/A",
+      "prenomina": "N/A",
+      "matriz_mce": "N/A"
+    }
+  },
+  {
+    "id": "jesus_perez",
+    "name": "Jesus Alejandro Perez Hernandez",
+    "password": "MAQUINADOS",
+    "is_global_admin": false,
+    "permissions": {
+      "po_tracker": "N/A",
+      "remisiones": "N/A",
+      "corte_doblez": "N/A",
+      "control_dimensional": "N/A",
+      "incoming_calidad": "N/A",
+      "control_espesores": "N/A",
+      "prenomina": "N/A",
+      "matriz_mce": "N/A"
+    }
+  },
+  {
+    "id": "uriel_garcia",
+    "name": "Uriel Alejandro Garcia Montoya",
+    "password": "MAQUINADOS",
+    "is_global_admin": false,
+    "permissions": {
+      "po_tracker": "N/A",
+      "remisiones": "N/A",
+      "corte_doblez": "Usuario",
+      "control_dimensional": "N/A",
+      "incoming_calidad": "N/A",
+      "control_espesores": "N/A",
+      "prenomina": "N/A",
+      "matriz_mce": "N/A"
+    }
+  },
+  {
+    "id": "luis_alvarado",
+    "name": "Luis Alejandro Alvarado Aguilar",
+    "password": "MAQUINADOS",
+    "is_global_admin": false,
+    "permissions": {
+      "po_tracker": "N/A",
+      "remisiones": "N/A",
+      "corte_doblez": "Usuario",
+      "control_dimensional": "N/A",
+      "incoming_calidad": "N/A",
+      "control_espesores": "N/A",
+      "prenomina": "N/A",
+      "matriz_mce": "N/A"
+    }
+  },
+  {
+    "id": "miguel_alvarado",
+    "name": "Miguel Antonio Alvarado Rojas",
+    "password": "MAQUINADOS",
+    "is_global_admin": false,
+    "permissions": {
+      "po_tracker": "N/A",
+      "remisiones": "N/A",
+      "corte_doblez": "N/A",
+      "control_dimensional": "N/A",
+      "incoming_calidad": "N/A",
+      "control_espesores": "N/A",
+      "prenomina": "N/A",
+      "matriz_mce": "N/A"
+    }
+  }
+]

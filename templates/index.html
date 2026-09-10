@@ -1,0 +1,280 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIGRAMA - Portal de Aplicaciones</title>
+  <link rel="icon" type="image/png" href="/static/img/logo_sigrama.png">
+  <link rel="stylesheet" href="/static/css/odoo-theme.css">
+</head>
+<body>
+
+  <!-- LOGIN OVERLAY (SSO) -->
+  <div class="login-overlay" id="loginOverlay" style="display: none;">
+    <div class="login-card">
+      <img src="/static/img/logo_sigrama.png" alt="SIGRAMA" class="login-brand-logo">
+      <h2 class="login-title">Acceso Concentradora</h2>
+      <p class="login-subtitle">Selecciona tu usuario e ingresa tu clave única</p>
+
+      <form class="login-form" id="loginForm">
+        <div class="login-field">
+          <label for="loginUserSelect">Usuario / Colaborador</label>
+          <select id="loginUserSelect" class="login-select" required>
+            <option value="" disabled selected>Cargando colaboradores...</option>
+          </select>
+        </div>
+
+        <div class="login-field">
+          <label for="loginPasswordInput">Clave de Acceso</label>
+          <input type="password" id="loginPasswordInput" class="login-input" placeholder="Ingresa tu contraseña" required autocomplete="current-password">
+        </div>
+
+        <button type="submit" class="btn-login-submit" id="btnLoginSubmit">
+          <span>Ingresar al Portal</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </button>
+      </form>
+
+      <div class="login-hint-box">
+        🔑 <b>Claves autorizadas:</b><br>
+        Administrador: <code>SigramaAdmin2026</code><br>
+        Personal Operativo: <code>MAQUINADOS</code>
+      </div>
+    </div>
+  </div>
+
+  <!-- ODOO STYLE TOP NAVBAR -->
+  <header class="odoo-navbar">
+    <div class="navbar-left">
+      <button class="app-switcher-btn" id="btnHomeLauncher" title="Inicio / Menú de Aplicaciones">
+        <div class="app-switcher-grid-icon">
+          <span></span><span></span><span></span>
+          <span></span><span></span><span></span>
+          <span></span><span></span><span></span>
+        </div>
+      </button>
+
+      <div class="brand-container" id="brandHomeLink" onclick="closeWorkspace()">
+        <img src="/static/img/logo_sigrama.png" alt="SIGRAMA" class="brand-logo">
+        <div class="brand-title">
+          SIGRAMA <span class="brand-badge">HUB</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="navbar-center">
+      <div class="search-container">
+        <span class="search-icon">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </span>
+        <input type="text" id="searchInput" class="search-input" placeholder="Buscar aplicaciones... (Presiona /)" autocomplete="off">
+        <span class="search-shortcut-badge">/</span>
+      </div>
+    </div>
+
+    <div class="navbar-right">
+      <div class="sys-stat-pill" id="sysStatsDisplay">
+        <span class="stat-dot-live"></span>
+        <span>Conectando...</span>
+      </div>
+
+      <button class="btn-navbar-action" id="btnOpenNewAppModal" title="Registrar una nueva aplicación" style="display: none;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        <span>Nueva App</span>
+      </button>
+
+      <!-- USER PROFILE WIDGET -->
+      <div class="user-profile-widget" id="userProfileWidget" style="display: none;">
+        <div class="user-avatar-circle" id="userAvatarCircle">JM</div>
+        <div class="user-info-text">
+          <span class="user-full-name" id="userFullName">Usuario</span>
+          <span class="user-role-badge" id="userRoleBadge">Rol</span>
+        </div>
+        <button class="btn-logout" id="btnLogout" title="Cerrar Sesión">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="clock-display" id="clockDisplay">00:00:00</div>
+    </div>
+  </header>
+
+  <!-- CATEGORY FILTER SUBNAV -->
+  <nav class="category-navbar" id="categoriesNav">
+    <button class="category-pill active">Todas las Apps</button>
+  </nav>
+
+  <!-- MAIN VIEW CONTAINER -->
+  <main class="main-wrapper">
+    
+    <!-- APPS GRID (ODOO SPRINGBOARD) -->
+    <div class="hub-container" id="hubContainer">
+      <div class="hub-header">
+        <div class="hub-title-block">
+          <h1>Centro de Aplicaciones y Servicios</h1>
+          <p id="hubWelcomeText">Plataforma centralizada de operaciones, ingeniería y gestión SIGRAMA</p>
+        </div>
+        <div class="hub-stats-badge" id="totalAppsBadge">
+          Cargando...
+        </div>
+      </div>
+
+      <div class="apps-grid" id="appsGrid">
+        <!-- Generado dinámicamente por app.js -->
+      </div>
+    </div>
+
+    <!-- EMBEDDED WORKSPACE (INTEGRATED APP VIEW) -->
+    <div class="workspace-container" id="workspaceContainer">
+      <div class="workspace-toolbar">
+        <div class="workspace-left">
+          <button class="btn-back-to-hub" id="btnBackToHub" title="Volver al menú de aplicaciones">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            <span>Volver al Menú</span>
+          </button>
+          <span class="workspace-app-title" id="workspaceAppTitle">Aplicación</span>
+        </div>
+
+        <div class="workspace-right">
+          <button class="btn-icon-action" id="btnWorkspaceReload" title="Recargar Aplicación" style="color: #cbd5e1;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"></path>
+              <path d="M21 3v5h-5"></path>
+            </svg>
+          </button>
+          <button class="btn-icon-action" id="btnWorkspaceNewTab" title="Abrir en Pestaña Externa" style="color: #cbd5e1;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M15 3h6v6"></path>
+              <path d="M10 14 21 3"></path>
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+            </svg>
+          </button>
+          <button class="btn-icon-action" id="btnWorkspaceFullscreen" title="Pantalla Completa" style="color: #cbd5e1;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M8 3H5a2 2 0 0 0-2 2v3"></path>
+              <path d="M21 8V5a2 2 0 0 0-2-2h-3"></path>
+              <path d="M3 16v3a2 2 0 0 0 2 2h3"></path>
+              <path d="M16 21h3a2 2 0 0 0 2-2v-3"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <iframe id="workspaceIframe" class="workspace-iframe-frame" src="about:blank" allow="clipboard-read; clipboard-write"></iframe>
+    </div>
+
+  </main>
+
+  <!-- APP CONFIGURATION MODAL -->
+  <div class="modal-backdrop" id="appModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modalTitle">Configuración de Aplicación</h3>
+        <button class="modal-close-btn" id="btnModalClose">&times;</button>
+      </div>
+      <form id="appForm">
+        <div class="modal-body">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="formAppId">Identificador Único (ID)</label>
+              <input type="text" id="formAppId" class="form-input" placeholder="ej: corte_v2" required>
+            </div>
+            <div class="form-group">
+              <label for="formAppName">Nombre de la Aplicación</label>
+              <input type="text" id="formAppName" class="form-input" placeholder="ej: Corte y Doblez" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="formAppCategory">Categoría / Departamento</label>
+              <input type="text" id="formAppCategory" class="form-input" placeholder="ej: Producción, Calidad, etc." required>
+            </div>
+            <div class="form-group">
+              <label for="formAppType">Tipo de Ejecución</label>
+              <select id="formAppType" class="form-select">
+                <option value="streamlit">Streamlit (Python)</option>
+                <option value="python">Script / GUI Python</option>
+                <option value="external_url">Enlace Web / URL Externa</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="formAppPath">Directorio de Trabajo (Ruta Absoluta)</label>
+            <input type="text" id="formAppPath" class="form-input" placeholder="C:\Users\...\scratch\mi-app">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="formAppEntry">Archivo Principal</label>
+              <input type="text" id="formAppEntry" class="form-input" placeholder="app.py">
+            </div>
+            <div class="form-group">
+              <label for="formAppPort">Puerto de Red</label>
+              <input type="number" id="formAppPort" class="form-input" placeholder="8501">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="formAppUrl">URL Personalizada (Opcional)</label>
+              <input type="text" id="formAppUrl" class="form-input" placeholder="http://localhost:8501">
+            </div>
+            <div class="form-group">
+              <label for="formAppIcon">Ícono</label>
+              <select id="formAppIcon" class="form-select">
+                <option value="shopping-cart">Compras (Carrito)</option>
+                <option value="truck">Logística / Almacén (Camión)</option>
+                <option value="scissors">Producción (Tijeras / Corte)</option>
+                <option value="ruler">Metrología (Regla)</option>
+                <option value="shield-check">Calidad (Escudo de Validación)</option>
+                <option value="calculator">Costos / Cotizador (Calculadora)</option>
+                <option value="layers">Espesores / Capas (Capas)</option>
+                <option value="users">Recursos Humanos (Usuarios)</option>
+                <option value="cpu">Ingeniería / Automatización (CPU)</option>
+                <option value="lightbulb">Innovación / Ideas (Foco)</option>
+                <option value="external-link">Enlace Externo (Web)</option>
+                <option value="globe">General (Globo)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="formAppDesc">Descripción Breve</label>
+            <textarea id="formAppDesc" class="form-textarea" rows="2" placeholder="Resumen del propósito y funcionalidad de la aplicación"></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-danger" id="btnDeleteApp" style="display: none;">Eliminar</button>
+          <button type="button" class="btn-secondary" id="btnModalCancel">Cancelar</button>
+          <button type="submit" class="btn-primary" id="btnModalSave">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- TOAST CONTAINER -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- JAVASCRIPT -->
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
