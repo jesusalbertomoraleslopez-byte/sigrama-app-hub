@@ -29,7 +29,7 @@ let pollTimer = null;
 // DOM Elements
 const loginOverlay = document.getElementById("loginOverlay");
 const loginForm = document.getElementById("loginForm");
-const loginUserSelect = document.getElementById("loginUserSelect");
+const loginUserInput = document.getElementById("loginUserInput");
 const loginPasswordInput = document.getElementById("loginPasswordInput");
 
 const userProfileWidget = document.getElementById("userProfileWidget");
@@ -84,24 +84,15 @@ async function checkAuthAndInitialize() {
   }
 }
 
-// Show Login Screen & Load Users
-async function showLoginScreen() {
+// Show Login Screen
+function showLoginScreen() {
   currentUser = null;
   loginOverlay.style.display = "flex";
   userProfileWidget.style.display = "none";
   if (btnOpenNewAppModal) btnOpenNewAppModal.style.display = "none";
   appsGrid.innerHTML = "";
-
-  try {
-    const res = await fetch("/api/users/list");
-    const data = await res.json();
-    if (data.success) {
-      loginUserSelect.innerHTML = `<option value="" disabled selected>-- Selecciona tu nombre --</option>` +
-        data.users.map(u => `<option value="${u.id}">${u.name}</option>`).join("");
-    }
-  } catch (err) {
-    showToast("Error al cargar lista de usuarios", "error");
-  }
+  if (loginUserInput) loginUserInput.value = "";
+  if (loginPasswordInput) loginPasswordInput.value = "";
 }
 
 // Set Authenticated User UI
@@ -145,11 +136,11 @@ function setupEventListeners() {
   // Login Form
   loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const userId = loginUserSelect.value;
-    const password = loginPasswordInput.value;
+    const username = loginUserInput ? loginUserInput.value.trim() : "";
+    const password = loginPasswordInput ? loginPasswordInput.value : "";
 
-    if (!userId) {
-      showToast("Por favor selecciona tu nombre", "error");
+    if (!username) {
+      showToast("Por favor ingresa tu usuario o código de acceso", "error");
       return;
     }
 
@@ -157,15 +148,15 @@ function setupEventListeners() {
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user_id: userId, password: password })
+        body: JSON.stringify({ username: username, password: password })
       });
       const data = await res.json();
       if (data.success) {
         showToast(data.message, "success");
-        loginPasswordInput.value = "";
+        if (loginPasswordInput) loginPasswordInput.value = "";
         setAuthenticatedUser(data.user);
       } else {
-        showToast(data.message || "Clave incorrecta", "error");
+        showToast(data.message || "Usuario o clave incorrectos", "error");
       }
     } catch (err) {
       showToast(`Error de conexión: ${err.message}`, "error");

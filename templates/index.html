@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -14,19 +14,17 @@
     <div class="login-card">
       <img src="/static/img/logo_sigrama.png" alt="SIGRAMA" class="login-brand-logo">
       <h2 class="login-title">Acceso Concentradora</h2>
-      <p class="login-subtitle">Selecciona tu usuario e ingresa tu clave única</p>
+      <p class="login-subtitle">Ingresa tu usuario corporativo y clave de acceso</p>
 
       <form class="login-form" id="loginForm">
         <div class="login-field">
-          <label for="loginUserSelect">Usuario / Colaborador</label>
-          <select id="loginUserSelect" class="login-select" required>
-            <option value="" disabled selected>Cargando colaboradores...</option>
-          </select>
+          <label for="loginUserInput">Usuario Corporativo</label>
+          <input type="text" id="loginUserInput" class="login-input" placeholder="Ingresa tu usuario asignado" required autocomplete="username">
         </div>
 
         <div class="login-field">
           <label for="loginPasswordInput">Clave de Acceso</label>
-          <input type="password" id="loginPasswordInput" class="login-input" placeholder="Ingresa tu contraseña" required autocomplete="current-password">
+          <input type="password" id="loginPasswordInput" class="login-input" placeholder="••••••••" required autocomplete="current-password">
         </div>
 
         <button type="submit" class="btn-login-submit" id="btnLoginSubmit">
@@ -37,12 +35,6 @@
           </svg>
         </button>
       </form>
-
-      <div class="login-hint-box">
-        🔑 <b>Claves autorizadas:</b><br>
-        Administrador: <code>SigramaAdmin2026</code><br>
-        Personal Operativo: <code>MAQUINADOS</code>
-      </div>
     </div>
   </div>
 

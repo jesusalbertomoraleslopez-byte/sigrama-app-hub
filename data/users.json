@@ -1,6 +1,8 @@
 ﻿[
   {
-    "id": "jesus_morales",
+    "id": "jmorales",
+    "username": "jmorales",
+    "user_code": "SIG-ADM-01",
     "name": "Jesús Alberto Morales López",
     "password": "SigramaAdmin2026",
     "is_global_admin": true,
@@ -16,7 +18,9 @@
     }
   },
   {
-    "id": "luis_quintana",
+    "id": "lquintana",
+    "username": "lquintana",
+    "user_code": "SIG-REM-02",
     "name": "Luis Alfredo Quintana Palma",
     "password": "MAQUINADOS",
     "is_global_admin": false,
@@ -32,7 +36,9 @@
     }
   },
   {
-    "id": "bryan_flores",
+    "id": "bflores",
+    "username": "bflores",
+    "user_code": "SIG-COR-03",
     "name": "Bryan Alejandro Flores Mancinas",
     "password": "MAQUINADOS",
     "is_global_admin": false,
@@ -48,7 +54,9 @@
     }
   },
   {
-    "id": "cruz_carreon",
+    "id": "ccarreon",
+    "username": "ccarreon",
+    "user_code": "SIG-COR-04",
     "name": "Cruz Eduardo Carreon Rios",
     "password": "MAQUINADOS",
     "is_global_admin": false,
@@ -64,7 +72,9 @@
     }
   },
   {
-    "id": "jose_fernandez",
+    "id": "jfernandez",
+    "username": "jfernandez",
+    "user_code": "SIG-USR-05",
     "name": "Jose Rodolfo Fernandez Muñiz",
     "password": "MAQUINADOS",
     "is_global_admin": false,
@@ -80,7 +90,9 @@
     }
   },
   {
-    "id": "marvin_flores",
+    "id": "mflores",
+    "username": "mflores",
+    "user_code": "SIG-PLA-06",
     "name": "Marvin Manuel Flores Campa",
     "password": "MAQUINADOS",
     "is_global_admin": false,
@@ -96,7 +108,9 @@
     }
   },
   {
-    "id": "jesus_campos",
+    "id": "jcampos",
+    "username": "jcampos",
+    "user_code": "SIG-PLA-07",
     "name": "Jesus Manuel Campos Martinez",
     "password": "MAQUINADOS",
     "is_global_admin": false,
@@ -112,7 +126,9 @@
     }
   },
   {
-    "id": "jesus_perez",
+    "id": "jperez",
+    "username": "jperez",
+    "user_code": "SIG-PLA-08",
     "name": "Jesus Alejandro Perez Hernandez",
     "password": "MAQUINADOS",
     "is_global_admin": false,
@@ -128,7 +144,9 @@
     }
   },
   {
-    "id": "uriel_garcia",
+    "id": "ugarcia",
+    "username": "ugarcia",
+    "user_code": "SIG-PLA-09",
     "name": "Uriel Alejandro Garcia Montoya",
     "password": "MAQUINADOS",
     "is_global_admin": false,
@@ -144,7 +162,9 @@
     }
   },
   {
-    "id": "luis_alvarado",
+    "id": "lalvarado",
+    "username": "lalvarado",
+    "user_code": "SIG-PLA-10",
     "name": "Luis Alejandro Alvarado Aguilar",
     "password": "MAQUINADOS",
     "is_global_admin": false,
@@ -160,7 +180,9 @@
     }
   },
   {
-    "id": "miguel_alvarado",
+    "id": "malvarado",
+    "username": "malvarado",
+    "user_code": "SIG-PLA-11",
     "name": "Miguel Antonio Alvarado Rojas",
     "password": "MAQUINADOS",
     "is_global_admin": false,

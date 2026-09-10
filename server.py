@@ -54,30 +54,27 @@ def get_current_user():
 def index():
     return render_template("index.html")
 
-@app.route("/api/users/list", methods=["GET"])
-def get_user_names():
-    users = load_users()
-    user_list = [{"id": u["id"], "name": u["name"]} for u in users]
-    return jsonify({"success": True, "users": user_list})
-
 @app.route("/api/auth/login", methods=["POST"])
 def auth_login():
     data = request.json or {}
-    user_identifier = data.get("user_id") or data.get("username", "").strip()
+    user_identifier = (data.get("username") or data.get("user_id", "")).strip().lower()
     password = data.get("password", "").strip()
+
+    if not user_identifier or not password:
+        return jsonify({"success": False, "message": "Ingrese usuario y contraseña"}), 400
 
     users = load_users()
     matched = None
     for u in users:
-        if u["id"] == user_identifier or u["name"].lower() == user_identifier.lower():
+        u_id = u.get("id", "").lower()
+        u_name = u.get("username", "").lower()
+        u_code = u.get("user_code", "").lower()
+        if user_identifier in [u_id, u_name, u_code]:
             matched = u
             break
 
-    if not matched:
-        return jsonify({"success": False, "message": "Usuario no encontrado"}), 401
-
-    if matched["password"] != password:
-        return jsonify({"success": False, "message": "Clave o contraseña incorrecta"}), 401
+    if not matched or matched["password"] != password:
+        return jsonify({"success": False, "message": "Credenciales inválidas. Verifique su usuario y contraseña."}), 401
 
     session["user_id"] = matched["id"]
     return jsonify({
@@ -86,6 +83,8 @@ def auth_login():
         "user": {
             "id": matched["id"],
             "name": matched["name"],
+            "username": matched.get("username", matched["id"]),
+            "user_code": matched.get("user_code", ""),
             "is_global_admin": matched.get("is_global_admin", False),
             "permissions": matched.get("permissions", {})
         }

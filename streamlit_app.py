@@ -1,4 +1,4 @@
-﻿"""
+"""
 SIGRAMA App Hub - Streamlit Cloud Wrapper
 Renders the 100% exact Odoo-Style Enterprise UI inside Streamlit Cloud.
 """
@@ -60,19 +60,17 @@ standalone_html = f"""
     <div class="login-card">
       <img src="data:image/png;base64,{b64_logo}" alt="SIGRAMA" class="login-brand-logo">
       <h2 class="login-title">Acceso Concentradora</h2>
-      <p class="login-subtitle">Selecciona tu usuario e ingresa tu clave única</p>
+      <p class="login-subtitle">Ingresa tus credenciales corporativas autorizadas</p>
 
       <form class="login-form" id="loginForm">
         <div class="login-field">
-          <label for="loginUserSelect">Usuario / Colaborador</label>
-          <select id="loginUserSelect" class="login-select" required>
-            <option value="" disabled selected>-- Selecciona tu nombre --</option>
-          </select>
+          <label for="loginUserInput">Usuario Corporativo o Código de Acceso</label>
+          <input type="text" id="loginUserInput" class="login-input" placeholder="Ej. jmorales o SIG-ADM-01" required autocomplete="username">
         </div>
 
         <div class="login-field">
           <label for="loginPasswordInput">Clave de Acceso</label>
-          <input type="password" id="loginPasswordInput" class="login-input" placeholder="Ingresa tu contraseña" required autocomplete="current-password">
+          <input type="password" id="loginPasswordInput" class="login-input" placeholder="Ingresa tu clave de acceso" required autocomplete="current-password">
         </div>
 
         <button type="submit" class="btn-login-submit" id="btnLoginSubmit">
@@ -83,12 +81,6 @@ standalone_html = f"""
           </svg>
         </button>
       </form>
-
-      <div class="login-hint-box">
-        🔑 <b>Claves autorizadas:</b><br>
-        Administrador: <code>SigramaAdmin2026</code><br>
-        Personal Operativo: <code>MAQUINADOS</code>
-      </div>
     </div>
   </div>
 
@@ -233,7 +225,7 @@ standalone_html = f"""
     let currentOpenedApp = null;
 
     const loginOverlay = document.getElementById("loginOverlay");
-    const loginUserSelect = document.getElementById("loginUserSelect");
+    const loginUserInput = document.getElementById("loginUserInput");
     const loginPasswordInput = document.getElementById("loginPasswordInput");
     const userProfileWidget = document.getElementById("userProfileWidget");
     const userAvatarCircle = document.getElementById("userAvatarCircle");
@@ -286,8 +278,8 @@ standalone_html = f"""
       loginOverlay.style.display = "flex";
       userProfileWidget.style.display = "none";
       appsGrid.innerHTML = "";
-      loginUserSelect.innerHTML = `<option value="" disabled selected>-- Selecciona tu nombre --</option>` +
-        USERS.map(u => `<option value="${{u.id}}">${{u.name}}</option>`).join("");
+      if (loginUserInput) loginUserInput.value = "";
+      if (loginPasswordInput) loginPasswordInput.value = "";
     }}
 
     function setAuth(user) {{
@@ -309,15 +301,19 @@ standalone_html = f"""
     function setupEvents() {{
       document.getElementById("loginForm").addEventListener("submit", (e) => {{
         e.preventDefault();
-        const uid = loginUserSelect.value;
-        const pass = loginPasswordInput.value.trim();
-        const matched = USERS.find(u => u.id === uid);
+        const inputVal = (loginUserInput ? loginUserInput.value : "").trim().toLowerCase();
+        const pass = (loginPasswordInput ? loginPasswordInput.value : "").trim();
+        const matched = USERS.find(u => 
+          (u.username && u.username.toLowerCase() === inputVal) ||
+          (u.user_code && u.user_code.toLowerCase() === inputVal) ||
+          (u.id && u.id.toLowerCase() === inputVal)
+        );
         if (matched && matched.password === pass) {{
           showToast(`Bienvenido, ${{matched.name}}`, "success");
-          loginPasswordInput.value = "";
+          if (loginPasswordInput) loginPasswordInput.value = "";
           setAuth(matched);
         }} else {{
-          showToast("Clave o contraseña incorrecta", "error");
+          showToast("Usuario o clave incorrectos", "error");
         }}
       }});
 
