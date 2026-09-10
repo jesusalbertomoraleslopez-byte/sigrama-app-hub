@@ -333,6 +333,11 @@ standalone_html = f"""
         showLogin();
       }});
 
+      const btnBack = document.getElementById("btnBackToHub");
+      if (btnBack) {
+        btnBack.addEventListener("click", closeWorkspace);
+      }
+
       searchInput.addEventListener("input", (e) => {{
         searchQuery = e.target.value.toLowerCase().trim();
         renderApps();
@@ -473,22 +478,14 @@ standalone_html = f"""
       const app = apps.find(a => a.id === appId);
       if (!app) return;
 
-      if (app.cloud_url) {{
-        window.open(app.cloud_url, "_blank");
-      }} else {{
-        currentOpenedApp = app;
-        workspaceAppTitle.innerText = `${{app.name}} - Rol: ${{app.user_role}}`;
-        workspaceIframe.src = app.target_url;
-        hubContainer.style.display = "none";
-        workspaceContainer.classList.add("active");
-        window.scrollTo(0, 0);
-      }}
+      const targetUrl = app.cloud_url || app.target_url || app.url || `http://localhost:${{app.port}}`;
+      window.open(targetUrl, "_blank");
     }};
 
     window.closeWorkspace = function() {{
-      workspaceIframe.src = "about:blank";
-      workspaceContainer.classList.remove("active");
-      hubContainer.style.display = "block";
+      if (workspaceIframe) workspaceIframe.src = "about:blank";
+      if (workspaceContainer) workspaceContainer.classList.remove("active");
+      if (hubContainer) hubContainer.style.display = "block";
       currentOpenedApp = null;
     }};
 
