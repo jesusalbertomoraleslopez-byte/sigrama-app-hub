@@ -334,9 +334,9 @@ standalone_html = f"""
       }});
 
       const btnBack = document.getElementById("btnBackToHub");
-      if (btnBack) {
+      if (btnBack) {{
         btnBack.addEventListener("click", closeWorkspace);
-      }
+      }}
 
       searchInput.addEventListener("input", (e) => {{
         searchQuery = e.target.value.toLowerCase().trim();
