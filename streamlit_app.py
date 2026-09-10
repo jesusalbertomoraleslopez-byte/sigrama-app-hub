@@ -195,6 +195,9 @@ standalone_html = f"""
         </div>
       </div>
 
+      <div id="workspaceNotice" style="display: none; flex: 1; align-items: center; justify-content: center; background: #f8fafc; min-height: 500px;">
+        <div id="workspaceNoticeText"></div>
+      </div>
       <iframe id="workspaceIframe" class="workspace-iframe-frame" src="about:blank" allow="clipboard-read; clipboard-write"></iframe>
     </div>
   </main>
@@ -240,6 +243,8 @@ standalone_html = f"""
     const workspaceContainer = document.getElementById("workspaceContainer");
     const workspaceIframe = document.getElementById("workspaceIframe");
     const workspaceAppTitle = document.getElementById("workspaceAppTitle");
+    const workspaceNotice = document.getElementById("workspaceNotice");
+    const workspaceNoticeText = document.getElementById("workspaceNoticeText");
     const totalAppsBadge = document.getElementById("totalAppsBadge");
     const hubWelcomeText = document.getElementById("hubWelcomeText");
     const toastContainer = document.getElementById("toastContainer");
@@ -478,15 +483,59 @@ standalone_html = f"""
       const app = apps.find(a => a.id === appId);
       if (!app) return;
 
-      const targetUrl = app.cloud_url || app.target_url || app.url || `http://localhost:${{app.port}}`;
-      window.open(targetUrl, "_blank");
+      currentOpenedApp = app;
+      workspaceAppTitle.innerText = `${{app.name}} - Rol: ${{app.user_role}}`;
+
+      if (app.cloud_url) {{
+        const sep = app.cloud_url.includes("?") ? "&" : "?";
+        const embedUrl = `${{app.cloud_url}}${{sep}}embed=true&sso_user=${{encodeURIComponent(currentUser.name)}}&sso_role=${{encodeURIComponent(app.user_role)}}&sso_token=SIGRAMA_AUTH_TOKEN`;
+        workspaceIframe.src = embedUrl;
+        workspaceNotice.style.display = "none";
+        workspaceIframe.style.display = "block";
+      }} else {{
+        const localUrl = `http://localhost:${{app.port}}?sso_user=${{encodeURIComponent(currentUser.name)}}&sso_role=${{encodeURIComponent(app.user_role)}}&sso_token=SIGRAMA_AUTH_TOKEN`;
+        if (window.location.protocol === "https:") {{
+          workspaceIframe.style.display = "none";
+          workspaceNotice.style.display = "flex";
+          workspaceNoticeText.innerHTML = `
+            <div style="text-align: center; max-width: 520px; padding: 40px 30px; background: white; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; margin: 40px auto;">
+              <div style="font-size: 48px; margin-bottom: 12px;">💻</div>
+              <h3 style="margin-bottom: 8px; color: #002B49; font-size: 1.25rem;">${{app.name}}</h3>
+              <p style="color: #64748b; font-size: 0.95rem; line-height: 1.5; margin-bottom: 24px;">
+                Esta aplicación está alojada en tu entorno local (<b>Puerto ${{app.port}}</b>).<br>
+                Por seguridad del navegador, los puertos HTTP locales no pueden incrustarse dentro de una web HTTPS en la nube.
+              </p>
+              <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                <button onclick="window.open('${{localUrl}}', '_blank')" style="padding: 10px 20px; font-size: 0.9rem; font-weight: 600; background: #002B49; color: white; border: none; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                  <span>Abrir App Local en Nueva Pestaña</span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
+                </button>
+                <button onclick="closeWorkspace()" style="padding: 10px 20px; font-size: 0.9rem; font-weight: 600; background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; border-radius: 8px; cursor: pointer;">
+                  Volver al Menú
+                </button>
+              </div>
+            </div>
+          `;
+        }} else {{
+          workspaceIframe.src = localUrl;
+          workspaceNotice.style.display = "none";
+          workspaceIframe.style.display = "block";
+        }}
+      }}
+
+      hubContainer.style.display = "none";
+      categoriesNav.style.display = "none";
+      workspaceContainer.classList.add("active");
+      window.scrollTo(0, 0);
     }};
 
     window.closeWorkspace = function() {{
       if (workspaceIframe) workspaceIframe.src = "about:blank";
       if (workspaceContainer) workspaceContainer.classList.remove("active");
+      if (categoriesNav) categoriesNav.style.display = "flex";
       if (hubContainer) hubContainer.style.display = "block";
       currentOpenedApp = null;
+      window.scrollTo(0, 0);
     }};
 
     function showToast(msg, type = "info") {{
