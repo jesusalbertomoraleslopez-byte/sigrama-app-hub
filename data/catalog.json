@@ -94,6 +94,7 @@
     "entry_file": "app.py",
     "port": 8507,
     "url": "http://localhost:8507",
+    "cloud_url": "https://control-espesores-lamina.streamlit.app/",
     "icon": "layers",
     "bg_gradient": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
     "badge": "Calidad",
