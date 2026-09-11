@@ -351,7 +351,7 @@ function renderApps() {
               </button>
             ` : ''}
             ${app.cloud_url ? `
-              <button class="btn-icon-action" title="Abrir en Streamlit Cloud" onclick="window.open('${app.cloud_url}', '_blank')">
+              <button class="btn-icon-action" title="Abrir en Streamlit Cloud" onclick="launchCloudApp('${app.id}')">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
               </button>
             ` : ''}
@@ -480,6 +480,18 @@ async function launchInNewTab(appId) {
   } else {
     window.open(targetUrl, "_blank");
   }
+}
+
+// Launch in Streamlit Cloud with SSO Parameters
+function launchCloudApp(appId) {
+  const app = appsData.find(a => a.id === appId);
+  if (!app || !app.cloud_url) return;
+
+  const sep = app.cloud_url.includes("?") ? "&" : "?";
+  const userName = currentUser ? currentUser.name : "Administrador General";
+  const userRole = app.user_role || (currentUser && currentUser.is_global_admin ? "Admin" : "Usuario");
+  const ssoUrl = `${app.cloud_url}${sep}sso_user=${encodeURIComponent(userName)}&sso_role=${encodeURIComponent(userRole)}&sso_token=SIGRAMA_AUTH_TOKEN`;
+  window.open(ssoUrl, "_blank");
 }
 
 // Open In Integrated Workspace

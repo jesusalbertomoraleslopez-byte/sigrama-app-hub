@@ -110,7 +110,7 @@
     "entry_file": "app.py",
     "port": 8508,
     "url": "http://localhost:8508",
-    "cloud_url": "https://prenomina.streamlit.app/",
+    "cloud_url": "https://sig-prenomina-app.streamlit.app/",
     "icon": "users",
     "bg_gradient": "linear-gradient(135deg, #b224ef 0%, #7579ff 100%)",
     "badge": "RRHH",
