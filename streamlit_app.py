@@ -19,10 +19,21 @@ st.set_page_config(
 # Ocultar marcos y paddings de Streamlit
 st.markdown("""
 <style>
-    #MainMenu, header, footer, [data-testid="stHeader"], [data-testid="stFooter"], [data-testid="stDecoration"], [data-testid="stViewerBadge"], div[class*="viewerBadge"], div[class*="ProfileButton"], a[href*="streamlit.io"] { display: none !important; }
-    .block-container { padding: 0 !important; margin: 0 !important; max-width: 100% !important; }
-    [data-testid="stAppViewContainer"] { padding: 0 !important; background-color: #F1F5F9; }
-    iframe { border: none !important; width: 100% !important; }
+    #MainMenu, header, footer, [data-testid="stHeader"], [data-testid="stFooter"], [data-testid="stDecoration"], [data-testid="stViewerBadge"], div[class*="viewerBadge"], div[class*="ProfileButton"], a[href*="streamlit.io"], div[class*="manageApp"], div[class*="ManageApp"], button[title*="Manage app"], [data-testid="stStatusWidget"] { display: none !important; }
+    html, body, [data-testid="stAppViewContainer"], .main, .block-container {
+        height: 100vh !important;
+        max-height: 100vh !important;
+        overflow: hidden !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: 100% !important;
+    }
+    [data-testid="stCustomComponentV1"], iframe {
+        border: none !important;
+        width: 100% !important;
+        height: 100vh !important;
+        min-height: 100vh !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -539,6 +550,7 @@ standalone_html = f"""
       hubContainer.style.display = "none";
       categoriesNav.style.display = "none";
       workspaceContainer.classList.add("active");
+      document.body.style.overflow = "hidden";
       window.scrollTo(0, 0);
     }};
 
@@ -547,6 +559,7 @@ standalone_html = f"""
       if (workspaceContainer) workspaceContainer.classList.remove("active");
       if (categoriesNav) categoriesNav.style.display = "flex";
       if (hubContainer) hubContainer.style.display = "block";
+      document.body.style.overflow = "auto";
       currentOpenedApp = null;
       window.scrollTo(0, 0);
     }};
