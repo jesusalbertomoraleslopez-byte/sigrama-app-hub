@@ -215,7 +215,9 @@ standalone_html = f"""
       <div id="workspaceNotice" style="display: none; flex: 1; align-items: center; justify-content: center; background: #f8fafc; min-height: 500px;">
         <div id="workspaceNoticeText"></div>
       </div>
-      <iframe id="workspaceIframe" class="workspace-iframe-frame" src="about:blank" allow="clipboard-read; clipboard-write"></iframe>
+      <div class="workspace-iframe-wrapper">
+        <iframe id="workspaceIframe" class="workspace-iframe-frame" src="about:blank" allow="clipboard-read; clipboard-write"></iframe>
+      </div>
     </div>
   </main>
 
@@ -505,7 +507,7 @@ standalone_html = f"""
 
       if (app.cloud_url) {{
         const sep = app.cloud_url.includes("?") ? "&" : "?";
-        const embedUrl = `${{app.cloud_url}}${{sep}}sso_user=${{encodeURIComponent(currentUser.name)}}&sso_role=${{encodeURIComponent(app.user_role)}}&sso_token=SIGRAMA_AUTH_TOKEN`;
+        const embedUrl = `${{app.cloud_url}}${{sep}}embed=true&sso_user=${{encodeURIComponent(currentUser.name)}}&sso_role=${{encodeURIComponent(app.user_role)}}&sso_token=SIGRAMA_AUTH_TOKEN`;
         workspaceIframe.src = embedUrl;
         workspaceNotice.style.display = "none";
         workspaceIframe.style.display = "block";
