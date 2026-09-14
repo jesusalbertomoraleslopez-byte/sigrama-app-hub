@@ -26,6 +26,23 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+components.html("""
+<script>
+(function() {
+  function hideFooter() {
+    document.querySelectorAll('footer').forEach(function(el) { el.style.display='none'; });
+    ['stFooter','stDecoration','stViewerBadge'].forEach(function(id) {
+      document.querySelectorAll('[data-testid="'+id+'"]').forEach(function(el) { el.style.display='none'; });
+    });
+    document.querySelectorAll('div[class*="viewerBadge"],div[class*="ProfileButton"],a[href*="streamlit.io"]').forEach(function(el) { el.style.display='none'; });
+  }
+  var observer = new MutationObserver(hideFooter);
+  observer.observe(document.documentElement, {childList:true, subtree:true});
+  hideFooter();
+})();
+</script>
+""", height=0)
+
 BASE_DIR = Path(__file__).resolve().parent
 
 def load_file(p):
