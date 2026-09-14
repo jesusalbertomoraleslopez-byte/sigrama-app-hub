@@ -505,7 +505,7 @@ standalone_html = f"""
 
       if (app.cloud_url) {{
         const sep = app.cloud_url.includes("?") ? "&" : "?";
-        const embedUrl = `${{app.cloud_url}}${{sep}}embed=true&sso_user=${{encodeURIComponent(currentUser.name)}}&sso_role=${{encodeURIComponent(app.user_role)}}&sso_token=SIGRAMA_AUTH_TOKEN`;
+        const embedUrl = `${{app.cloud_url}}${{sep}}sso_user=${{encodeURIComponent(currentUser.name)}}&sso_role=${{encodeURIComponent(app.user_role)}}&sso_token=SIGRAMA_AUTH_TOKEN`;
         workspaceIframe.src = embedUrl;
         workspaceNotice.style.display = "none";
         workspaceIframe.style.display = "block";
