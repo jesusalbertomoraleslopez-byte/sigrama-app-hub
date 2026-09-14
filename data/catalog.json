@@ -134,5 +134,22 @@
     "badge": "Ingeniería",
     "enabled": true,
     "auto_start": true
+  },
+  {
+    "id": "remisiones_consultas",
+    "name": "Consulta de Piezas SGP",
+    "category": "Almacén & Logística",
+    "description": "Base de Datos SGP para consulta y trazabilidad rápida de piezas, especificaciones y remisiones.",
+    "type": "streamlit",
+    "path": "C:\\Users\\albertol\\.gemini\\antigravity\\scratch\\remisiones-de-materiales",
+    "entry_file": "app_consultas.py",
+    "port": 8510,
+    "url": "http://localhost:8510",
+    "cloud_url": "https://remisiones.streamlit.app/",
+    "icon": "globe",
+    "bg_gradient": "linear-gradient(135deg, #0284c7 0%, #0369a1 100%)",
+    "badge": "Consultas",
+    "enabled": true,
+    "auto_start": true
   }
 ]
