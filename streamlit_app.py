@@ -19,7 +19,7 @@ st.set_page_config(
 # Ocultar marcos y paddings de Streamlit
 st.markdown("""
 <style>
-    #MainMenu, header, footer, [data-testid="stHeader"] { display: none !important; }
+    #MainMenu, header, footer, [data-testid="stHeader"], [data-testid="stFooter"], [data-testid="stDecoration"], [data-testid="stViewerBadge"], div[class*="viewerBadge"], div[class*="ProfileButton"], a[href*="streamlit.io"] { display: none !important; }
     .block-container { padding: 0 !important; margin: 0 !important; max-width: 100% !important; }
     [data-testid="stAppViewContainer"] { padding: 0 !important; background-color: #F1F5F9; }
     iframe { border: none !important; width: 100% !important; }
