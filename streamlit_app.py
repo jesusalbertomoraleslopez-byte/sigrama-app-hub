@@ -214,6 +214,11 @@ standalone_html = f"""
               <path d="M21 3v5h-5"></path>
             </svg>
           </button>
+          <button class="btn-icon-action" id="btnWorkspaceFullscreen" title="Maximizar / Pantalla Completa" style="color: #cbd5e1;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="iconFullscreen">
+              <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+            </svg>
+          </button>
           <button class="btn-icon-action" id="btnWorkspaceNewTab" title="Abrir en Pestaña Externa" style="color: #cbd5e1;">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M15 3h6v6"></path>
@@ -392,6 +397,23 @@ standalone_html = f"""
       document.getElementById("btnWorkspaceReload").addEventListener("click", () => {{
         if (workspaceIframe.src) workspaceIframe.src = workspaceIframe.src;
       }});
+      const btnFs = document.getElementById("btnWorkspaceFullscreen");
+      if (btnFs) {{
+        btnFs.addEventListener("click", () => {{
+          workspaceContainer.classList.toggle("fullscreen");
+          const isFull = workspaceContainer.classList.contains("fullscreen");
+          const icon = document.getElementById("iconFullscreen");
+          if (icon) {{
+            if (isFull) {{
+              icon.innerHTML = `<path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"></path>`;
+              btnFs.title = "Restaurar tamaño";
+            }} else {{
+              icon.innerHTML = `<path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>`;
+              btnFs.title = "Maximizar / Pantalla Completa";
+            }}
+          }}
+        }});
+      }}
       document.getElementById("btnWorkspaceNewTab").addEventListener("click", () => {{
         if (currentOpenedApp) window.open(currentOpenedApp.target_url, "_blank");
       }});
@@ -558,7 +580,10 @@ standalone_html = f"""
 
     window.closeWorkspace = function() {{
       if (workspaceIframe) workspaceIframe.src = "about:blank";
-      if (workspaceContainer) workspaceContainer.classList.remove("active");
+      if (workspaceContainer) {{
+        workspaceContainer.classList.remove("active");
+        workspaceContainer.classList.remove("fullscreen");
+      }}
       if (categoriesNav) categoriesNav.style.display = "flex";
       if (hubContainer) hubContainer.style.display = "block";
       document.body.style.overflow = "auto";

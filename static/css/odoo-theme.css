@@ -583,6 +583,19 @@ body {
   gap: 8px;
 }
 
+.workspace-container.fullscreen {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 999999 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background: #ffffff;
+}
+
+.workspace-container.fullscreen .workspace-iframe-wrapper {
+  height: calc(100vh - 44px) !important;
+}
+
 .workspace-iframe-wrapper {
   flex: 1;
   width: 100%;
@@ -594,7 +607,7 @@ body {
 
 .workspace-iframe-frame {
   width: 100%;
-  height: calc(100% + 42px);
+  height: 100%;
   border: none;
   background: #f8fafc;
   display: block;
