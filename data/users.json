@@ -15,7 +15,8 @@
       "control_espesores": "Admin",
       "prenomina": "Admin",
       "matriz_mce": "Admin",
-      "remisiones_consultas": "Admin"
+      "remisiones_consultas": "Admin",
+      "requisiciones": "Admin"
     }
   },
   {
@@ -34,7 +35,8 @@
       "control_espesores": "Usuario",
       "prenomina": "Usuario",
       "matriz_mce": "Usuario",
-      "remisiones_consultas": "Admin"
+      "remisiones_consultas": "Admin",
+      "requisiciones": "Admin"
     }
   },
   {
@@ -53,7 +55,8 @@
       "control_espesores": "Usuario",
       "prenomina": "Usuario",
       "matriz_mce": "Usuario",
-      "remisiones_consultas": "Usuario"
+      "remisiones_consultas": "Usuario",
+      "requisiciones": "Admin"
     }
   },
   {
@@ -72,7 +75,8 @@
       "control_espesores": "Usuario",
       "prenomina": "Usuario",
       "matriz_mce": "Usuario",
-      "remisiones_consultas": "Usuario"
+      "remisiones_consultas": "Usuario",
+      "requisiciones": "Admin"
     }
   },
   {
@@ -91,7 +95,8 @@
       "control_espesores": "Usuario",
       "prenomina": "Usuario",
       "matriz_mce": "Usuario",
-      "remisiones_consultas": "Usuario"
+      "remisiones_consultas": "Usuario",
+      "requisiciones": "Admin"
     }
   },
   {
@@ -110,7 +115,8 @@
       "control_espesores": "N/A",
       "prenomina": "N/A",
       "matriz_mce": "N/A",
-      "remisiones_consultas": "Usuario"
+      "remisiones_consultas": "Usuario",
+      "requisiciones": "Usuario"
     }
   },
   {
@@ -129,7 +135,8 @@
       "control_espesores": "N/A",
       "prenomina": "N/A",
       "matriz_mce": "N/A",
-      "remisiones_consultas": "Usuario"
+      "remisiones_consultas": "Usuario",
+      "requisiciones": "Usuario"
     }
   },
   {
@@ -148,7 +155,8 @@
       "control_espesores": "N/A",
       "prenomina": "N/A",
       "matriz_mce": "N/A",
-      "remisiones_consultas": "Usuario"
+      "remisiones_consultas": "Usuario",
+      "requisiciones": "Usuario"
     }
   },
   {
@@ -167,7 +175,8 @@
       "control_espesores": "N/A",
       "prenomina": "N/A",
       "matriz_mce": "N/A",
-      "remisiones_consultas": "Usuario"
+      "remisiones_consultas": "Usuario",
+      "requisiciones": "Usuario"
     }
   },
   {
@@ -186,7 +195,8 @@
       "control_espesores": "N/A",
       "prenomina": "N/A",
       "matriz_mce": "N/A",
-      "remisiones_consultas": "Usuario"
+      "remisiones_consultas": "Usuario",
+      "requisiciones": "Usuario"
     }
   },
   {
@@ -205,7 +215,8 @@
       "control_espesores": "N/A",
       "prenomina": "N/A",
       "matriz_mce": "N/A",
-      "remisiones_consultas": "Usuario"
+      "remisiones_consultas": "Usuario",
+      "requisiciones": "Usuario"
     }
   }
 ]

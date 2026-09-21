@@ -1,5 +1,22 @@
 [
   {
+    "id": "requisiciones",
+    "name": "Requisiciones de Compra",
+    "category": "Compras & Proyectos",
+    "description": "Control de requisiciones, cotizaciones de proveedores, aprobación de órdenes y expediente SAT.",
+    "type": "streamlit",
+    "path": "C:\\Users\\albertol\\.gemini\\antigravity\\scratch\\sigrama_requisiciones_app",
+    "entry_file": "app.py",
+    "port": 8506,
+    "url": "http://localhost:8506",
+    "cloud_url": "https://sigrama-requisiciones-app.streamlit.app/",
+    "icon": "file-text",
+    "bg_gradient": "linear-gradient(135deg, #EC2024 0%, #a81014 100%)",
+    "badge": "Prioridad Alta",
+    "enabled": true,
+    "auto_start": true
+  },
+  {
     "id": "po_tracker",
     "name": "PO Tracker & Requerimientos",
     "category": "Compras & Proyectos",
