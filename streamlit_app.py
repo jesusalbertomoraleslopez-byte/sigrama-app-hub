@@ -1,6 +1,7 @@
 """
-SIGRAMA App Hub - Streamlit Cloud Wrapper
+SIGRAMA App Hub - Streamlit Cloud Wrapper v2.7.0
 Renders the 100% exact Odoo-Style Enterprise UI inside Streamlit Cloud.
+Integración con Requisiciones de Compra (sigrama-requisiciones-app)
 """
 import os
 import json
