@@ -175,7 +175,8 @@ function setupEventListeners() {
   });
 
   // Logout
-  btnLogout.addEventListener("click", async () => {
+  btnLogout.addEventListener("click", async (e) => {
+    e.stopPropagation();
     try {
       await fetch("/api/auth/logout", { method: "POST" });
       showToast("Sesión cerrada", "info");
@@ -185,55 +186,378 @@ function setupEventListeners() {
     }
   });
 
-  // Modal Cambiar Contraseña
-  const changePasswordModal = document.getElementById("changePasswordModal");
-  const btnOpenChangePassLogin = document.getElementById("btnOpenChangePassLogin");
-  const btnOpenChangePassHeader = document.getElementById("btnOpenChangePassHeader");
-  const btnCloseChangePassModal = document.getElementById("btnCloseChangePassModal");
-  const btnCancelChangePass = document.getElementById("btnCancelChangePass");
-  const changePasswordForm = document.getElementById("changePasswordForm");
-  const cpUsernameInput = document.getElementById("cpUsernameInput");
-  const cpOldPasswordInput = document.getElementById("cpOldPasswordInput");
-  const cpNewPasswordInput = document.getElementById("cpNewPasswordInput");
-  const cpConfirmPasswordInput = document.getElementById("cpConfirmPasswordInput");
+  // ============================================
+  // MODAL ADMINISTRACIÓN PERFIL DE USUARIO
+  // ============================================
+  const userProfileModal = document.getElementById("userProfileModal");
+  const btnCloseUserProfileModal = document.getElementById("btnCloseUserProfileModal");
+  const btnOpenUserProfileHeader = document.getElementById("btnOpenUserProfileHeader");
+  const tabBtnPersonal = document.getElementById("tabBtnPersonal");
+  const tabBtnSecurity = document.getElementById("tabBtnSecurity");
+  const tabBtnAdminUsers = document.getElementById("tabBtnAdminUsers");
+  const tabProfilePersonal = document.getElementById("tabProfilePersonal");
+  const tabProfileSecurity = document.getElementById("tabProfileSecurity");
+  const tabProfileAdminUsers = document.getElementById("tabProfileAdminUsers");
 
-  function openChangePassModal(prefillUser = "") {
-    if (cpUsernameInput) {
-      cpUsernameInput.value = prefillUser;
-      cpUsernameInput.readOnly = !!prefillUser;
-    }
-    if (cpOldPasswordInput) cpOldPasswordInput.value = "";
-    if (cpNewPasswordInput) cpNewPasswordInput.value = "";
-    if (cpConfirmPasswordInput) cpConfirmPasswordInput.value = "";
-    if (changePasswordModal) {
-      changePasswordModal.classList.add("active");
-      setTimeout(() => {
-        if (prefillUser && cpOldPasswordInput) {
-          cpOldPasswordInput.focus();
-        } else if (cpUsernameInput) {
-          cpUsernameInput.focus();
+  function switchProfileTab(targetTabId) {
+    [tabBtnPersonal, tabBtnSecurity, tabBtnAdminUsers].forEach(btn => {
+      if (btn) {
+        if (btn.getAttribute("data-tab") === targetTabId) {
+          btn.classList.add("active");
+        } else {
+          btn.classList.remove("active");
         }
-      }, 100);
+      }
+    });
+    [tabProfilePersonal, tabProfileSecurity, tabProfileAdminUsers].forEach(pane => {
+      if (pane) {
+        if (pane.id === targetTabId) {
+          pane.classList.add("active");
+        } else {
+          pane.classList.remove("active");
+        }
+      }
+    });
+  }
+
+  if (tabBtnPersonal) tabBtnPersonal.addEventListener("click", () => switchProfileTab("tabProfilePersonal"));
+  if (tabBtnSecurity) tabBtnSecurity.addEventListener("click", () => switchProfileTab("tabProfileSecurity"));
+  if (tabBtnAdminUsers) tabBtnAdminUsers.addEventListener("click", () => switchProfileTab("tabProfileAdminUsers"));
+
+  async function openUserProfileModal(initialTab = "tabProfilePersonal") {
+    if (!currentUser) return;
+
+    // Actualizar banner
+    const parts = (currentUser.name || "").split(" ");
+    const initials = (parts.length > 1 ? (parts[0][0] + parts[1][0]) : (currentUser.name || "US").substring(0, 2)).toUpperCase();
+    const bannerCircle = document.getElementById("profBannerAvatarCircle");
+    const bannerName = document.getElementById("profBannerName");
+    const bannerRole = document.getElementById("profBannerRole");
+    const bannerId = document.getElementById("profBannerId");
+    if (bannerCircle) bannerCircle.innerText = initials;
+    if (bannerName) bannerName.innerText = currentUser.name || "Usuario";
+    if (bannerRole) bannerRole.innerText = currentUser.is_global_admin ? "Administrador General" : "Usuario Autorizado";
+    if (bannerId) bannerId.innerText = `Usuario: ${currentUser.username || currentUser.id} | Cód: ${currentUser.user_code || 'S/C'}`;
+
+    // Tab 1: Mis Datos
+    const editName = document.getElementById("profEditName");
+    const editUsername = document.getElementById("profEditUsername");
+    const editCode = document.getElementById("profEditCode");
+    const editEmail = document.getElementById("profEditEmail");
+    const editDept = document.getElementById("profEditDepartment");
+    if (editName) editName.value = currentUser.name || "";
+    if (editUsername) editUsername.value = currentUser.username || currentUser.id || "";
+    if (editCode) editCode.value = currentUser.user_code || "";
+    if (editEmail) editEmail.value = currentUser.email || "";
+    if (editDept) editDept.value = currentUser.department || "";
+
+    // Tab 2: Seguridad
+    const secOld = document.getElementById("profSecOldPassword");
+    const secNew = document.getElementById("profSecNewPassword");
+    const secConf = document.getElementById("profSecConfirmPassword");
+    if (secOld) secOld.value = "";
+    if (secNew) secNew.value = "";
+    if (secConf) secConf.value = "";
+
+    // Tab 3: Admin
+    if (tabBtnAdminUsers) {
+      if (currentUser.is_global_admin) {
+        tabBtnAdminUsers.style.display = "flex";
+        await populateAdminUserSelector();
+      } else {
+        tabBtnAdminUsers.style.display = "none";
+      }
+    }
+
+    switchProfileTab(initialTab);
+    if (userProfileModal) userProfileModal.classList.add("active");
+  }
+
+  function closeUserProfileModal() {
+    if (userProfileModal) userProfileModal.classList.remove("active");
+  }
+
+  if (btnCloseUserProfileModal) {
+    btnCloseUserProfileModal.addEventListener("click", closeUserProfileModal);
+  }
+
+  if (userProfileWidget) {
+    userProfileWidget.addEventListener("click", () => {
+      openUserProfileModal("tabProfilePersonal");
+    });
+  }
+
+  if (btnOpenUserProfileHeader) {
+    btnOpenUserProfileHeader.addEventListener("click", (e) => {
+      e.stopPropagation();
+      openUserProfileModal("tabProfilePersonal");
+    });
+  }
+
+  // Tab 1: Guardar Mis Datos
+  const formProfilePersonal = document.getElementById("formProfilePersonal");
+  if (formProfilePersonal) {
+    formProfilePersonal.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (!currentUser) return;
+
+      const nName = (document.getElementById("profEditName").value || "").trim();
+      const nUser = (document.getElementById("profEditUsername").value || "").trim();
+      const nCode = (document.getElementById("profEditCode").value || "").trim();
+      const nEmail = (document.getElementById("profEditEmail").value || "").trim();
+      const nDept = (document.getElementById("profEditDepartment").value || "").trim();
+
+      if (!nName) {
+        showToast("El nombre completo es obligatorio", "error");
+        return;
+      }
+
+      try {
+        const res = await fetch("/api/users/update", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: currentUser.id,
+            name: nName,
+            username: nUser,
+            user_code: nCode,
+            email: nEmail,
+            department: nDept
+          })
+        });
+        const resData = await res.json();
+        if (resData.success) {
+          currentUser.name = nName;
+          currentUser.username = nUser;
+          currentUser.user_code = nCode;
+          currentUser.email = nEmail;
+          currentUser.department = nDept;
+
+          const names = currentUser.name.split(" ");
+          userAvatarCircle.innerText = names.length > 1 ? (names[0][0] + names[1][0]).toUpperCase() : currentUser.name.substring(0, 2).toUpperCase();
+          userFullName.innerText = currentUser.name;
+          if (hubWelcomeText) {
+            hubWelcomeText.innerText = `Sesión activa: ${currentUser.name} | Aplicaciones autorizadas según tu perfil`;
+          }
+
+          closeUserProfileModal();
+          showToast("¡Datos de perfil guardados correctamente!", "success");
+        } else {
+          showToast(resData.message || "Error al actualizar perfil", "error");
+        }
+      } catch (err) {
+        showToast(`Error al guardar perfil: ${err.message}`, "error");
+      }
+    });
+  }
+
+  // Tab 2: Guardar Mi Contraseña
+  const formProfileSecurity = document.getElementById("formProfileSecurity");
+  if (formProfileSecurity) {
+    formProfileSecurity.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (!currentUser) return;
+
+      const oldPass = (document.getElementById("profSecOldPassword").value || "").trim();
+      const newPass = (document.getElementById("profSecNewPassword").value || "").trim();
+      const confPass = (document.getElementById("profSecConfirmPassword").value || "").trim();
+
+      if (!oldPass) {
+        showToast("Ingresa tu contraseña actual", "error");
+        return;
+      }
+      if (newPass.length < 4) {
+        showToast("La nueva contraseña debe tener al menos 4 caracteres", "error");
+        return;
+      }
+      if (newPass !== confPass) {
+        showToast("La confirmación no coincide con la nueva contraseña", "error");
+        return;
+      }
+      if (newPass === oldPass) {
+        showToast("La nueva contraseña debe ser diferente a la actual", "error");
+        return;
+      }
+
+      try {
+        const res = await fetch("/api/auth/change-password", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            user_id: currentUser.id,
+            old_password: oldPass,
+            new_password: newPass
+          })
+        });
+        const resData = await res.json();
+        if (resData.success) {
+          closeUserProfileModal();
+          showToast("¡Tu contraseña ha sido actualizada con éxito!", "success");
+        } else {
+          showToast(resData.message || "Error al cambiar contraseña", "error");
+        }
+      } catch (err) {
+        showToast(`Error al actualizar contraseña: ${err.message}`, "error");
+      }
+    });
+  }
+
+  // Tab 3: Panel Admin de Usuarios
+  const adminSelectUser = document.getElementById("adminSelectUser");
+  const formProfileAdminUser = document.getElementById("formProfileAdminUser");
+  let adminUsersList = [];
+
+  async function populateAdminUserSelector() {
+    if (!adminSelectUser) return;
+    try {
+      const res = await fetch("/api/users");
+      const data = await res.json();
+      if (data.success && data.users) {
+        adminUsersList = data.users;
+        const currentSel = adminSelectUser.value || (currentUser ? currentUser.id : adminUsersList[0]?.id);
+        adminSelectUser.innerHTML = "";
+        adminUsersList.forEach(u => {
+          const opt = document.createElement("option");
+          opt.value = u.id;
+          opt.textContent = `${u.name} (@${u.username || u.id} - ${u.user_code || 'S/C'})`;
+          adminSelectUser.appendChild(opt);
+        });
+        adminSelectUser.value = currentSel;
+        loadAdminSelectedUser(adminSelectUser.value);
+      }
+    } catch(err) {}
+  }
+
+  function loadAdminSelectedUser(userId) {
+    const u = adminUsersList.find(x => x.id === userId);
+    if (!u) return;
+
+    const aName = document.getElementById("adminEditName");
+    const aUser = document.getElementById("adminEditUsername");
+    const aCode = document.getElementById("adminEditCode");
+    const aEmail = document.getElementById("adminEditEmail");
+    const aDept = document.getElementById("adminEditDepartment");
+    const aPass = document.getElementById("adminEditNewPass");
+    const aIsAdmin = document.getElementById("adminEditIsAdmin");
+
+    if (aName) aName.value = u.name || "";
+    if (aUser) aUser.value = u.username || u.id || "";
+    if (aCode) aCode.value = u.user_code || "";
+    if (aEmail) aEmail.value = u.email || "";
+    if (aDept) aDept.value = u.department || "";
+    if (aPass) aPass.value = "";
+    if (aIsAdmin) aIsAdmin.checked = !!u.is_global_admin;
+
+    const tbody = document.getElementById("adminPermissionsTableBody");
+    if (tbody) {
+      tbody.innerHTML = "";
+      allApps.forEach(app => {
+        const currentPerm = (u.permissions && u.permissions[app.id]) || (u.is_global_admin ? "Admin" : "N/A");
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>
+            <strong style="color: #0f172a;">${app.title}</strong>
+            <div style="font-size: 0.72rem; color: #64748b;">${app.category}</div>
+          </td>
+          <td>
+            <select class="perm-select" data-app="${app.id}">
+              <option value="Admin" ${currentPerm === 'Admin' ? 'selected' : ''}>Admin</option>
+              <option value="Usuario" ${currentPerm === 'Usuario' ? 'selected' : ''}>Usuario</option>
+              <option value="N/A" ${currentPerm === 'N/A' ? 'selected' : ''}>Sin Acceso (N/A)</option>
+            </select>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
     }
   }
 
-  function closeChangePassModal() {
-    if (changePasswordModal) changePasswordModal.classList.remove("active");
-  }
-
-  if (btnOpenChangePassLogin) {
-    btnOpenChangePassLogin.addEventListener("click", () => {
-      const currLoginVal = loginUserInput ? loginUserInput.value.trim() : "";
-      openChangePassModal(currLoginVal);
+  if (adminSelectUser) {
+    adminSelectUser.addEventListener("change", (e) => {
+      loadAdminSelectedUser(e.target.value);
     });
   }
 
-  if (btnOpenChangePassHeader) {
-    btnOpenChangePassHeader.addEventListener("click", () => {
-      const currUserVal = currentUser ? (currentUser.username || currentUser.id) : "";
-      openChangePassModal(currUserVal);
+  if (formProfileAdminUser) {
+    formProfileAdminUser.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const targetId = adminSelectUser ? adminSelectUser.value : "";
+      const targetUser = adminUsersList.find(x => x.id === targetId);
+      if (!targetUser) return;
+
+      const nName = (document.getElementById("adminEditName").value || "").trim();
+      const nUser = (document.getElementById("adminEditUsername").value || "").trim();
+      const nCode = (document.getElementById("adminEditCode").value || "").trim();
+      const nEmail = (document.getElementById("adminEditEmail").value || "").trim();
+      const nDept = (document.getElementById("adminEditDepartment").value || "").trim();
+      const nPass = (document.getElementById("adminEditNewPass").value || "").trim();
+      const nIsAdmin = document.getElementById("adminEditIsAdmin").checked;
+
+      if (!nName) {
+        showToast("El nombre del colaborador no puede estar vacío", "error");
+        return;
+      }
+
+      if (nPass && nPass.length < 4) {
+        showToast("La nueva contraseña debe tener al menos 4 caracteres", "error");
+        return;
+      }
+
+      const newPerms = Object.assign({}, targetUser.permissions || {});
+      document.querySelectorAll("#adminPermissionsTableBody .perm-select").forEach(sel => {
+        const appId = sel.getAttribute("data-app");
+        newPerms[appId] = sel.value;
+      });
+
+      try {
+        const res = await fetch("/api/users/update", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: targetUser.id,
+            name: nName,
+            username: nUser,
+            user_code: nCode,
+            email: nEmail,
+            department: nDept,
+            is_global_admin: nIsAdmin,
+            permissions: newPerms,
+            new_password: nPass || undefined
+          })
+        });
+        const resData = await res.json();
+        if (resData.success) {
+          targetUser.name = nName;
+          targetUser.username = nUser;
+          targetUser.user_code = nCode;
+          targetUser.email = nEmail;
+          targetUser.department = nDept;
+          targetUser.is_global_admin = nIsAdmin;
+          targetUser.permissions = newPerms;
+
+          if (currentUser && currentUser.id === targetUser.id) {
+            currentUser = Object.assign({}, targetUser);
+            const names = currentUser.name.split(" ");
+            userAvatarCircle.innerText = names.length > 1 ? (names[0][0] + names[1][0]).toUpperCase() : currentUser.name.substring(0, 2).toUpperCase();
+            userFullName.innerText = currentUser.name;
+            userRoleBadge.innerText = currentUser.is_global_admin ? "Administrador General" : "Usuario Autorizado";
+            loadApps();
+          }
+
+          closeUserProfileModal();
+          showToast(`¡Usuario ${targetUser.name} actualizado correctamente!`, "success");
+        } else {
+          showToast(resData.message || "Error al actualizar usuario", "error");
+        }
+      } catch (err) {
+        showToast(`Error de conexión: ${err.message}`, "error");
+      }
     });
   }
+
+  // ============================================
+  // MODAL CAMBIAR CONTRASEÑA (PANTALLA DE LOGIN)
+  // ============================================
 
   if (btnCloseChangePassModal) btnCloseChangePassModal.addEventListener("click", closeChangePassModal);
   if (btnCancelChangePass) btnCancelChangePass.addEventListener("click", closeChangePassModal);

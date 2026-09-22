@@ -945,6 +945,15 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.14);
   padding: 4px 12px 4px 6px;
   border-radius: 24px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.user-profile-widget:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 .user-avatar-circle {
@@ -958,6 +967,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .user-info-text {
@@ -981,10 +991,11 @@ body {
   color: #93c5fd;
 }
 
+.btn-profile-manage,
 .btn-change-password {
   background: transparent;
   border: none;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.7);
   cursor: pointer;
   padding: 4px;
   border-radius: 4px;
@@ -994,9 +1005,10 @@ body {
   transition: color 0.15s, background-color 0.15s;
 }
 
+.btn-profile-manage:hover,
 .btn-change-password:hover {
   color: #38bdf8;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .btn-logout {
@@ -1034,3 +1046,178 @@ body {
   background: #e0e7ff;
   color: #3730a3;
 }
+
+/* USER PROFILE MODAL & TABS */
+.profile-nav-tabs {
+  display: flex;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 0 16px;
+  gap: 6px;
+  overflow-x: auto;
+}
+
+.profile-nav-tab {
+  background: none;
+  border: none;
+  padding: 11px 16px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.profile-nav-tab:hover {
+  color: #002B49;
+  background: rgba(0, 43, 73, 0.04);
+}
+
+.profile-nav-tab.active {
+  color: #002B49;
+  border-bottom-color: #002B49;
+  background: #ffffff;
+  border-radius: 6px 6px 0 0;
+  box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.03);
+}
+
+.profile-tab-pane {
+  display: none;
+}
+
+.profile-tab-pane.active {
+  display: block;
+}
+
+.profile-avatar-banner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: linear-gradient(135deg, #f8fafc 0%, #edf2f7 100%);
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  margin-bottom: 18px;
+}
+
+.profile-avatar-banner-circle {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #002B49;
+  color: #ffffff;
+  font-size: 1.3rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0, 43, 73, 0.25);
+  flex-shrink: 0;
+}
+
+.profile-avatar-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.profile-avatar-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.profile-avatar-subtitle {
+  font-size: 0.78rem;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+@media (max-width: 580px) {
+  .form-grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.profile-info-callout {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  color: #166534;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  margin-bottom: 16px;
+}
+
+.profile-info-callout.warning {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+  color: #1e40af;
+}
+
+.permissions-table-wrapper {
+  max-height: 240px;
+  overflow-y: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #ffffff;
+  margin-top: 8px;
+}
+
+.permissions-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+
+.permissions-table th {
+  background: #f8fafc;
+  padding: 8px 12px;
+  text-align: left;
+  font-weight: 700;
+  color: #475569;
+  border-bottom: 1px solid #e2e8f0;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.permissions-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
+}
+
+.permissions-table tr:hover td {
+  background: #f8fafc;
+}
+
+.perm-select {
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  font-size: 0.78rem;
+  font-weight: 600;
+  background: #ffffff;
+  outline: none;
+}
+

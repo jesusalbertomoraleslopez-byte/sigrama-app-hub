@@ -5,6 +5,8 @@
     "user_code": "SIG-ADM-01",
     "name": "Jesús Alberto Morales López",
     "password": "SigramaAdmin2026",
+    "email": "jesus.alberto.morales.lopez@gmail.com",
+    "department": "Dirección General & Administración",
     "is_global_admin": true,
     "permissions": {
       "po_tracker": "Admin",
@@ -25,6 +27,8 @@
     "user_code": "SIG-REM-02",
     "name": "Luis Alfredo Quintana Palma",
     "password": "MAQUINADOS",
+    "email": "luis.quintana@sigrama.com.mx",
+    "department": "Almacén y Embarques",
     "is_global_admin": false,
     "permissions": {
       "po_tracker": "Usuario",
@@ -45,6 +49,8 @@
     "user_code": "SIG-COR-03",
     "name": "Bryan Alejandro Flores Mancinas",
     "password": "MAQUINADOS",
+    "email": "bryan.flores@sigrama.com.mx",
+    "department": "Corte y Doblez / Producción",
     "is_global_admin": false,
     "permissions": {
       "po_tracker": "Usuario",
@@ -65,6 +71,8 @@
     "user_code": "SIG-COR-04",
     "name": "Cruz Eduardo Carreon Rios",
     "password": "MAQUINADOS",
+    "email": "cruz.carreon@sigrama.com.mx",
+    "department": "Corte y Doblez / Producción",
     "is_global_admin": false,
     "permissions": {
       "po_tracker": "Usuario",
@@ -85,6 +93,8 @@
     "user_code": "SIG-USR-05",
     "name": "Jose Rodolfo Fernandez Muñiz",
     "password": "MAQUINADOS",
+    "email": "rodolfo.fernandez@sigrama.com.mx",
+    "department": "Operaciones",
     "is_global_admin": false,
     "permissions": {
       "po_tracker": "Usuario",
@@ -105,6 +115,8 @@
     "user_code": "SIG-PLA-06",
     "name": "Marvin Manuel Flores Campa",
     "password": "MAQUINADOS",
+    "email": "marvin.flores@sigrama.com.mx",
+    "department": "Planta / Operaciones",
     "is_global_admin": false,
     "permissions": {
       "po_tracker": "N/A",
@@ -125,6 +137,8 @@
     "user_code": "SIG-PLA-07",
     "name": "Jesus Manuel Campos Martinez",
     "password": "MAQUINADOS",
+    "email": "jesus.campos@sigrama.com.mx",
+    "department": "Planta / Operaciones",
     "is_global_admin": false,
     "permissions": {
       "po_tracker": "N/A",
@@ -145,6 +159,8 @@
     "user_code": "SIG-PLA-08",
     "name": "Jesus Alejandro Perez Hernandez",
     "password": "MAQUINADOS",
+    "email": "jesus.perez@sigrama.com.mx",
+    "department": "Planta / Operaciones",
     "is_global_admin": false,
     "permissions": {
       "po_tracker": "N/A",
@@ -165,6 +181,8 @@
     "user_code": "SIG-PLA-09",
     "name": "Uriel Alejandro Garcia Montoya",
     "password": "MAQUINADOS",
+    "email": "uriel.garcia@sigrama.com.mx",
+    "department": "Planta / Operaciones",
     "is_global_admin": false,
     "permissions": {
       "po_tracker": "N/A",
@@ -185,6 +203,8 @@
     "user_code": "SIG-PLA-10",
     "name": "Luis Alejandro Alvarado Aguilar",
     "password": "MAQUINADOS",
+    "email": "luis.alvarado@sigrama.com.mx",
+    "department": "Planta / Operaciones",
     "is_global_admin": false,
     "permissions": {
       "po_tracker": "N/A",
@@ -205,6 +225,8 @@
     "user_code": "SIG-PLA-11",
     "name": "Miguel Antonio Alvarado Rojas",
     "password": "MAQUINADOS",
+    "email": "miguel.alvarado@sigrama.com.mx",
+    "department": "Planta / Operaciones",
     "is_global_admin": false,
     "permissions": {
       "po_tracker": "N/A",

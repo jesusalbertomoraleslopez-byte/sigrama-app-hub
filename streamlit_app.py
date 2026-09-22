@@ -158,16 +158,16 @@ standalone_html = f"""
       </div>
 
       <!-- USER PROFILE WIDGET -->
-      <div class="user-profile-widget" id="userProfileWidget" style="display: none;">
+      <div class="user-profile-widget" id="userProfileWidget" title="Clic para administrar tu perfil y contraseña" style="display: none;">
         <div class="user-avatar-circle" id="userAvatarCircle">JM</div>
         <div class="user-info-text">
           <span class="user-full-name" id="userFullName">Usuario</span>
           <span class="user-role-badge" id="userRoleBadge">Rol</span>
         </div>
-        <button class="btn-change-password" id="btnOpenChangePassHeader" title="Cambiar mi Contraseña">
+        <button class="btn-profile-manage" id="btnOpenUserProfileHeader" title="Administrar Perfil y Datos">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
           </svg>
         </button>
         <button class="btn-logout" id="btnLogout" title="Cerrar Sesión">
@@ -250,6 +250,212 @@ standalone_html = f"""
     </div>
   </main>
 
+  <!-- MODAL ADMINISTRACIÓN PERFIL DE USUARIO -->
+  <div class="modal-backdrop" id="userProfileModal">
+    <div class="modal-card" style="max-width: 640px; max-height: 92vh; display: flex; flex-direction: column;">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="width: 36px; height: 36px; border-radius: 8px; background: #e0f2fe; color: #0284c7; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </div>
+          <div>
+            <h3 style="margin: 0; font-size: 1.1rem; font-weight: 700; color: #0f172a;">Administración de Perfil</h3>
+            <span style="font-size: 0.75rem; color: #64748b;">Configura tus datos, contraseña y consulta accesos autorizados</span>
+          </div>
+        </div>
+        <button class="modal-close-btn" id="btnCloseUserProfileModal" title="Cerrar">&times;</button>
+      </div>
+
+      <!-- TABS NAVEGACIÓN -->
+      <div class="profile-nav-tabs">
+        <button type="button" class="profile-nav-tab active" id="tabBtnPersonal" data-tab="tabProfilePersonal">
+          <span>👤 Mis Datos</span>
+        </button>
+        <button type="button" class="profile-nav-tab" id="tabBtnSecurity" data-tab="tabProfileSecurity">
+          <span>🔐 Contraseña & Seguridad</span>
+        </button>
+        <button type="button" class="profile-nav-tab" id="tabBtnAdminUsers" data-tab="tabProfileAdminUsers" style="display: none;">
+          <span>👥 Gestión de Usuarios (Admin)</span>
+        </button>
+      </div>
+
+      <div class="modal-body" style="padding: 18px 20px; overflow-y: auto; flex: 1;">
+        <!-- TAB 1: MIS DATOS -->
+        <div class="profile-tab-pane active" id="tabProfilePersonal">
+          <div class="profile-avatar-banner">
+            <div class="profile-avatar-banner-circle" id="profBannerAvatarCircle">JM</div>
+            <div class="profile-avatar-meta">
+              <div class="profile-avatar-title" id="profBannerName">Jesús Alberto Morales López</div>
+              <div class="profile-avatar-subtitle">
+                <span id="profBannerRole" style="font-weight: 700; color: #0284c7;">Administrador General</span>
+                <span>&bull;</span>
+                <span id="profBannerId" style="color: #64748b;">ID: jmorales</span>
+              </div>
+            </div>
+          </div>
+
+          <form id="formProfilePersonal" style="margin: 0;">
+            <div class="form-group">
+              <label for="profEditName">Nombre Completo del Colaborador</label>
+              <input type="text" id="profEditName" class="form-input" placeholder="Nombre completo" required>
+            </div>
+
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label for="profEditUsername">Nombre de Usuario (Login)</label>
+                <input type="text" id="profEditUsername" class="form-input" placeholder="usuario" required>
+              </div>
+              <div class="form-group">
+                <label for="profEditCode">Código de Empleado / Clave</label>
+                <input type="text" id="profEditCode" class="form-input" placeholder="Ej. SIG-ADM-01" required>
+              </div>
+            </div>
+
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label for="profEditEmail">Correo Electrónico Corporativo</label>
+                <input type="email" id="profEditEmail" class="form-input" placeholder="correo@sigrama.com.mx">
+              </div>
+              <div class="form-group">
+                <label for="profEditDepartment">Departamento / Área</label>
+                <input type="text" id="profEditDepartment" class="form-input" placeholder="Ej. Dirección General, Almacén, Corte y Doblez">
+              </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; margin-top: 14px;">
+              <button type="submit" class="btn-primary" style="background: #002B49; color: white; padding: 9px 20px; border-radius: 8px; font-weight: 600; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                <span>💾 Guardar Datos del Perfil</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- TAB 2: CONTRASEÑA & SEGURIDAD -->
+        <div class="profile-tab-pane" id="tabProfileSecurity">
+          <div class="profile-info-callout">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink: 0; margin-top: 2px;">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            <div>
+              <strong>Seguridad de la Cuenta:</strong> Para actualizar tu contraseña, es obligatorio ingresar tu contraseña anterior para autorizar la actualización.
+            </div>
+          </div>
+
+          <form id="formProfileSecurity" style="margin: 0;">
+            <div class="form-group">
+              <label for="profSecOldPassword">Contraseña Anterior (Actual)</label>
+              <input type="password" id="profSecOldPassword" class="form-input" placeholder="Ingresa tu contraseña actual" required autocomplete="current-password">
+            </div>
+
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label for="profSecNewPassword">Nueva Contraseña</label>
+                <input type="password" id="profSecNewPassword" class="form-input" placeholder="Mínimo 4 caracteres" required autocomplete="new-password">
+              </div>
+              <div class="form-group">
+                <label for="profSecConfirmPassword">Confirmar Nueva Contraseña</label>
+                <input type="password" id="profSecConfirmPassword" class="form-input" placeholder="Repite la nueva contraseña" required autocomplete="new-password">
+              </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; margin-top: 14px;">
+              <button type="submit" class="btn-primary" style="background: #002B49; color: white; padding: 9px 20px; border-radius: 8px; font-weight: 600; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                <span>🔒 Actualizar mi Contraseña</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- TAB 3: GESTIÓN DE USUARIOS (ADMIN) -->
+        <div class="profile-tab-pane" id="tabProfileAdminUsers">
+          <div class="profile-info-callout warning">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink: 0; margin-top: 2px;">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+            <div>
+              <strong>Panel de Administrador General:</strong> Puedes seleccionar a cualquier colaborador para modificar sus datos, restablecer su contraseña directamente o definir sus permisos por aplicación.
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label for="adminSelectUser" style="font-weight: 700; color: #002B49;">Seleccionar Colaborador / Usuario:</label>
+            <select id="adminSelectUser" class="form-input" style="font-weight: 600; font-size: 0.9rem; background-color: #f8fafc; border-color: #0284c7;"></select>
+          </div>
+
+          <form id="formProfileAdminUser" style="margin: 0;">
+            <div class="form-group">
+              <label for="adminEditName">Nombre Completo</label>
+              <input type="text" id="adminEditName" class="form-input" required>
+            </div>
+
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label for="adminEditUsername">Usuario</label>
+                <input type="text" id="adminEditUsername" class="form-input" required>
+              </div>
+              <div class="form-group">
+                <label for="adminEditCode">Código de Empleado</label>
+                <input type="text" id="adminEditCode" class="form-input" required>
+              </div>
+            </div>
+
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label for="adminEditEmail">Correo</label>
+                <input type="email" id="adminEditEmail" class="form-input">
+              </div>
+              <div class="form-group">
+                <label for="adminEditDepartment">Departamento</label>
+                <input type="text" id="adminEditDepartment" class="form-input">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="adminEditNewPass" style="color: #b91c1c; font-weight: 700;">🔑 Asignar Nueva Contraseña (Reseteo sin requerir clave anterior)</label>
+              <input type="text" id="adminEditNewPass" class="form-input" placeholder="Escribe para cambiar la clave de este usuario, o déjalo vacío para mantenerla">
+            </div>
+
+            <div class="form-group" style="margin-top: 10px;">
+              <label style="display: flex; align-items: center; gap: 8px; font-weight: 600; cursor: pointer;">
+                <input type="checkbox" id="adminEditIsAdmin" style="width: 16px; height: 16px;">
+                <span>Otorgar privilegios de Administrador General (Acceso Total al sistema)</span>
+              </label>
+            </div>
+
+            <div style="margin-top: 14px;">
+              <label style="font-weight: 700; color: #0f172a; margin-bottom: 6px; display: block;">Permisos por Aplicación del Catálogo:</label>
+              <div class="permissions-table-wrapper">
+                <table class="permissions-table">
+                  <thead>
+                    <tr>
+                      <th>Aplicación</th>
+                      <th style="width: 150px;">Nivel de Permiso</th>
+                    </tr>
+                  </thead>
+                  <tbody id="adminPermissionsTableBody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; margin-top: 16px;">
+              <button type="submit" class="btn-primary" style="background: #002B49; color: white; padding: 9px 20px; border-radius: 8px; font-weight: 600; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                <span>💾 Guardar Cambios de este Usuario</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- MODAL CAMBIAR CONTRASEÑA -->
   <div class="modal-backdrop" id="changePasswordModal">
     <div class="modal-card" style="max-width: 440px;">
@@ -323,12 +529,31 @@ standalone_html = f"""
       localStorage.setItem("sigrama_custom_passwords", JSON.stringify(stored));
     }}
 
-    const USERS = DEFAULT_USERS.map(u => {{
-      const customPass = getStoredPasswords()[u.id];
-      if (customPass) {{
-        return Object.assign({{}}, u, {{ password: customPass }});
+    function getStoredUsers() {{
+      try {{
+        return JSON.parse(localStorage.getItem("sigrama_custom_users") || "{{}}");
+      }} catch(e) {{
+        return {{}};
       }}
-      return Object.assign({{}}, u);
+    }}
+
+    function saveStoredUser(userObj) {{
+      const stored = getStoredUsers();
+      stored[userObj.id] = userObj;
+      localStorage.setItem("sigrama_custom_users", JSON.stringify(stored));
+    }}
+
+    const USERS = DEFAULT_USERS.map(u => {{
+      const customUsers = getStoredUsers();
+      const customPass = getStoredPasswords()[u.id];
+      let userCopy = Object.assign({{}}, u);
+      if (customUsers[u.id]) {{
+        userCopy = Object.assign(userCopy, customUsers[u.id]);
+      }}
+      if (customPass) {{
+        userCopy.password = customPass;
+      }}
+      return userCopy;
     }});
 
     function handleUpdatePassword(userId, newPassword) {{
@@ -478,11 +703,353 @@ standalone_html = f"""
         }}
       }});
 
-      btnLogout.addEventListener("click", () => {{
+      btnLogout.addEventListener("click", (e) => {{
+        e.stopPropagation();
         localStorage.removeItem("sigrama_hub_user");
         showToast("Sesión cerrada", "info");
         showLogin();
       }});
+
+      // ============================================
+      // MODAL ADMINISTRACIÓN PERFIL DE USUARIO
+      // ============================================
+      const userProfileModal = document.getElementById("userProfileModal");
+      const btnCloseUserProfileModal = document.getElementById("btnCloseUserProfileModal");
+      const btnOpenUserProfileHeader = document.getElementById("btnOpenUserProfileHeader");
+      const tabBtnPersonal = document.getElementById("tabBtnPersonal");
+      const tabBtnSecurity = document.getElementById("tabBtnSecurity");
+      const tabBtnAdminUsers = document.getElementById("tabBtnAdminUsers");
+      const tabProfilePersonal = document.getElementById("tabProfilePersonal");
+      const tabProfileSecurity = document.getElementById("tabProfileSecurity");
+      const tabProfileAdminUsers = document.getElementById("tabProfileAdminUsers");
+
+      function switchProfileTab(targetTabId) {{
+        [tabBtnPersonal, tabBtnSecurity, tabBtnAdminUsers].forEach(btn => {{
+          if (btn) {{
+            if (btn.getAttribute("data-tab") === targetTabId) {{
+              btn.classList.add("active");
+            }} else {{
+              btn.classList.remove("active");
+            }}
+          }}
+        }});
+        [tabProfilePersonal, tabProfileSecurity, tabProfileAdminUsers].forEach(pane => {{
+          if (pane) {{
+            if (pane.id === targetTabId) {{
+              pane.classList.add("active");
+            }} else {{
+              pane.classList.remove("active");
+            }}
+          }}
+        }});
+      }}
+
+      if (tabBtnPersonal) tabBtnPersonal.addEventListener("click", () => switchProfileTab("tabProfilePersonal"));
+      if (tabBtnSecurity) tabBtnSecurity.addEventListener("click", () => switchProfileTab("tabProfileSecurity"));
+      if (tabBtnAdminUsers) tabBtnAdminUsers.addEventListener("click", () => switchProfileTab("tabProfileAdminUsers"));
+
+      function openUserProfileModal(initialTab = "tabProfilePersonal") {{
+        if (!currentUser) return;
+
+        // Actualizar banner
+        const parts = (currentUser.name || "").split(" ");
+        const initials = (parts.length > 1 ? (parts[0][0] + parts[1][0]) : (currentUser.name || "US").substring(0, 2)).toUpperCase();
+        const bannerCircle = document.getElementById("profBannerAvatarCircle");
+        const bannerName = document.getElementById("profBannerName");
+        const bannerRole = document.getElementById("profBannerRole");
+        const bannerId = document.getElementById("profBannerId");
+        if (bannerCircle) bannerCircle.innerText = initials;
+        if (bannerName) bannerName.innerText = currentUser.name || "Usuario";
+        if (bannerRole) bannerRole.innerText = currentUser.is_global_admin ? "Administrador General" : "Usuario Autorizado";
+        if (bannerId) bannerId.innerText = `Usuario: ${{currentUser.username || currentUser.id}} | Cód: ${{currentUser.user_code || 'S/C'}}`;
+
+        // Tab 1: Mis Datos
+        const editName = document.getElementById("profEditName");
+        const editUsername = document.getElementById("profEditUsername");
+        const editCode = document.getElementById("profEditCode");
+        const editEmail = document.getElementById("profEditEmail");
+        const editDept = document.getElementById("profEditDepartment");
+        if (editName) editName.value = currentUser.name || "";
+        if (editUsername) editUsername.value = currentUser.username || currentUser.id || "";
+        if (editCode) editCode.value = currentUser.user_code || "";
+        if (editEmail) editEmail.value = currentUser.email || "";
+        if (editDept) editDept.value = currentUser.department || "";
+
+        // Tab 2: Seguridad
+        const secOld = document.getElementById("profSecOldPassword");
+        const secNew = document.getElementById("profSecNewPassword");
+        const secConf = document.getElementById("profSecConfirmPassword");
+        if (secOld) secOld.value = "";
+        if (secNew) secNew.value = "";
+        if (secConf) secConf.value = "";
+
+        // Tab 3: Admin
+        if (tabBtnAdminUsers) {{
+          if (currentUser.is_global_admin) {{
+            tabBtnAdminUsers.style.display = "flex";
+            populateAdminUserSelector();
+          }} else {{
+            tabBtnAdminUsers.style.display = "none";
+          }}
+        }}
+
+        switchProfileTab(initialTab);
+        if (userProfileModal) userProfileModal.classList.add("active");
+      }}
+
+      function closeUserProfileModal() {{
+        if (userProfileModal) userProfileModal.classList.remove("active");
+      }}
+
+      if (btnCloseUserProfileModal) {{
+        btnCloseUserProfileModal.addEventListener("click", closeUserProfileModal);
+      }}
+
+      if (userProfileWidget) {{
+        userProfileWidget.addEventListener("click", () => {{
+          openUserProfileModal("tabProfilePersonal");
+        }});
+      }}
+
+      if (btnOpenUserProfileHeader) {{
+        btnOpenUserProfileHeader.addEventListener("click", (e) => {{
+          e.stopPropagation();
+          openUserProfileModal("tabProfilePersonal");
+        }});
+      }}
+
+      // Tab 1: Guardar Mis Datos
+      const formProfilePersonal = document.getElementById("formProfilePersonal");
+      if (formProfilePersonal) {{
+        formProfilePersonal.addEventListener("submit", (e) => {{
+          e.preventDefault();
+          if (!currentUser) return;
+
+          const nName = (document.getElementById("profEditName").value || "").trim();
+          const nUser = (document.getElementById("profEditUsername").value || "").trim();
+          const nCode = (document.getElementById("profEditCode").value || "").trim();
+          const nEmail = (document.getElementById("profEditEmail").value || "").trim();
+          const nDept = (document.getElementById("profEditDepartment").value || "").trim();
+
+          if (!nName) {{
+            showToast("El nombre completo es obligatorio", "error");
+            return;
+          }}
+
+          currentUser.name = nName;
+          currentUser.username = nUser;
+          currentUser.user_code = nCode;
+          currentUser.email = nEmail;
+          currentUser.department = nDept;
+
+          const inMemory = USERS.find(x => x.id === currentUser.id);
+          if (inMemory) {{
+            inMemory.name = nName;
+            inMemory.username = nUser;
+            inMemory.user_code = nCode;
+            inMemory.email = nEmail;
+            inMemory.department = nDept;
+          }}
+
+          saveStoredUser(currentUser);
+          localStorage.setItem("sigrama_hub_user", JSON.stringify(currentUser));
+
+          const parts = currentUser.name.split(" ");
+          userAvatarCircle.innerText = (parts.length > 1 ? (parts[0][0] + parts[1][0]) : currentUser.name.substring(0, 2)).toUpperCase();
+          userFullName.innerText = currentUser.name;
+          hubWelcomeText.innerText = `Sesión activa: ${{currentUser.name}} | Aplicaciones autorizadas según tu perfil`;
+
+          try {{
+            fetch("/api/users/update", {{
+              method: "POST",
+              headers: {{ "Content-Type": "application/json" }},
+              body: JSON.stringify(currentUser)
+            }}).catch(() => {{}});
+          }} catch(err) {{}}
+
+          closeUserProfileModal();
+          showToast("¡Datos de perfil guardados correctamente!", "success");
+        }});
+      }}
+
+      // Tab 2: Guardar Mi Contraseña
+      const formProfileSecurity = document.getElementById("formProfileSecurity");
+      if (formProfileSecurity) {{
+        formProfileSecurity.addEventListener("submit", (e) => {{
+          e.preventDefault();
+          if (!currentUser) return;
+
+          const oldPass = (document.getElementById("profSecOldPassword").value || "").trim();
+          const newPass = (document.getElementById("profSecNewPassword").value || "").trim();
+          const confPass = (document.getElementById("profSecConfirmPassword").value || "").trim();
+
+          if (!oldPass) {{
+            showToast("Ingresa tu contraseña actual", "error");
+            return;
+          }}
+          if (oldPass !== currentUser.password) {{
+            showToast("La contraseña anterior no coincide con la registrada", "error");
+            return;
+          }}
+          if (newPass.length < 4) {{
+            showToast("La nueva contraseña debe tener al menos 4 caracteres", "error");
+            return;
+          }}
+          if (newPass !== confPass) {{
+            showToast("La confirmación no coincide con la nueva contraseña", "error");
+            return;
+          }}
+          if (newPass === oldPass) {{
+            showToast("La nueva contraseña debe ser diferente a la actual", "error");
+            return;
+          }}
+
+          handleUpdatePassword(currentUser.id, newPass);
+          closeUserProfileModal();
+          showToast("¡Tu contraseña ha sido actualizada con éxito!", "success");
+        }});
+      }}
+
+      // Tab 3: Panel Admin de Usuarios
+      const adminSelectUser = document.getElementById("adminSelectUser");
+      const formProfileAdminUser = document.getElementById("formProfileAdminUser");
+
+      function populateAdminUserSelector() {{
+        if (!adminSelectUser) return;
+        const currentSel = adminSelectUser.value || (currentUser ? currentUser.id : USERS[0].id);
+        adminSelectUser.innerHTML = "";
+        USERS.forEach(u => {{
+          const opt = document.createElement("option");
+          opt.value = u.id;
+          opt.textContent = `${{u.name}} (@${{u.username || u.id}} - ${{u.user_code || 'S/C'}})`;
+          adminSelectUser.appendChild(opt);
+        }});
+        adminSelectUser.value = currentSel;
+        loadAdminSelectedUser(adminSelectUser.value);
+      }}
+
+      function loadAdminSelectedUser(userId) {{
+        const u = USERS.find(x => x.id === userId);
+        if (!u) return;
+
+        const aName = document.getElementById("adminEditName");
+        const aUser = document.getElementById("adminEditUsername");
+        const aCode = document.getElementById("adminEditCode");
+        const aEmail = document.getElementById("adminEditEmail");
+        const aDept = document.getElementById("adminEditDepartment");
+        const aPass = document.getElementById("adminEditNewPass");
+        const aIsAdmin = document.getElementById("adminEditIsAdmin");
+
+        if (aName) aName.value = u.name || "";
+        if (aUser) aUser.value = u.username || u.id || "";
+        if (aCode) aCode.value = u.user_code || "";
+        if (aEmail) aEmail.value = u.email || "";
+        if (aDept) aDept.value = u.department || "";
+        if (aPass) aPass.value = "";
+        if (aIsAdmin) aIsAdmin.checked = !!u.is_global_admin;
+
+        const tbody = document.getElementById("adminPermissionsTableBody");
+        if (tbody) {{
+          tbody.innerHTML = "";
+          CATALOG.forEach(app => {{
+            const currentPerm = (u.permissions && u.permissions[app.id]) || (u.is_global_admin ? "Admin" : "N/A");
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+              <td>
+                <strong style="color: #0f172a;">${{app.title}}</strong>
+                <div style="font-size: 0.72rem; color: #64748b;">${{app.category}}</div>
+              </td>
+              <td>
+                <select class="perm-select" data-app="${{app.id}}">
+                  <option value="Admin" ${{currentPerm === 'Admin' ? 'selected' : ''}}>Admin</option>
+                  <option value="Usuario" ${{currentPerm === 'Usuario' ? 'selected' : ''}}>Usuario</option>
+                  <option value="N/A" ${{currentPerm === 'N/A' ? 'selected' : ''}}>Sin Acceso (N/A)</option>
+                </select>
+              </td>
+            `;
+            tbody.appendChild(tr);
+          }});
+        }}
+      }}
+
+      if (adminSelectUser) {{
+        adminSelectUser.addEventListener("change", (e) => {{
+          loadAdminSelectedUser(e.target.value);
+        }});
+      }}
+
+      if (formProfileAdminUser) {{
+        formProfileAdminUser.addEventListener("submit", (e) => {{
+          e.preventDefault();
+          const targetId = adminSelectUser ? adminSelectUser.value : "";
+          const targetUser = USERS.find(x => x.id === targetId);
+          if (!targetUser) return;
+
+          const nName = (document.getElementById("adminEditName").value || "").trim();
+          const nUser = (document.getElementById("adminEditUsername").value || "").trim();
+          const nCode = (document.getElementById("adminEditCode").value || "").trim();
+          const nEmail = (document.getElementById("adminEditEmail").value || "").trim();
+          const nDept = (document.getElementById("adminEditDepartment").value || "").trim();
+          const nPass = (document.getElementById("adminEditNewPass").value || "").trim();
+          const nIsAdmin = document.getElementById("adminEditIsAdmin").checked;
+
+          if (!nName) {{
+            showToast("El nombre del colaborador no puede estar vacío", "error");
+            return;
+          }}
+
+          const newPerms = Object.assign({{}}, targetUser.permissions || {{}});
+          document.querySelectorAll("#adminPermissionsTableBody .perm-select").forEach(sel => {{
+            const appId = sel.getAttribute("data-app");
+            newPerms[appId] = sel.value;
+          }});
+
+          targetUser.name = nName;
+          targetUser.username = nUser;
+          targetUser.user_code = nCode;
+          targetUser.email = nEmail;
+          targetUser.department = nDept;
+          targetUser.is_global_admin = nIsAdmin;
+          targetUser.permissions = newPerms;
+
+          if (nPass) {{
+            if (nPass.length < 4) {{
+              showToast("La nueva contraseña debe tener al menos 4 caracteres", "error");
+              return;
+            }}
+            targetUser.password = nPass;
+            saveStoredPassword(targetUser.id, nPass);
+          }}
+
+          saveStoredUser(targetUser);
+
+          if (currentUser && currentUser.id === targetUser.id) {{
+            currentUser = Object.assign({{}}, targetUser);
+            localStorage.setItem("sigrama_hub_user", JSON.stringify(currentUser));
+            const parts = currentUser.name.split(" ");
+            userAvatarCircle.innerText = (parts.length > 1 ? (parts[0][0] + parts[1][0]) : currentUser.name.substring(0, 2)).toUpperCase();
+            userFullName.innerText = currentUser.name;
+            userRoleBadge.innerText = currentUser.is_global_admin ? "Administrador General" : "Usuario Autorizado";
+            renderCategories();
+            renderApps();
+          }}
+
+          try {{
+            fetch("/api/users/update", {{
+              method: "POST",
+              headers: {{ "Content-Type": "application/json" }},
+              body: JSON.stringify(Object.assign({{}}, targetUser, {{ new_password: nPass || undefined }}))
+            }}).catch(() => {{}});
+          }} catch(err) {{}}
+
+          closeUserProfileModal();
+          showToast(`¡Usuario ${{targetUser.name}} actualizado correctamente!`, "success");
+        }});
+      }}
+
+      // ============================================
+      // MODAL CAMBIAR CONTRASEÑA (PANTALLA DE LOGIN)
+      // ============================================
 
       // Modal Cambiar Contraseña
       const changePasswordModal = document.getElementById("changePasswordModal");

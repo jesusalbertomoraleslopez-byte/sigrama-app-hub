@@ -91,16 +91,16 @@
       </button>
 
       <!-- USER PROFILE WIDGET -->
-      <div class="user-profile-widget" id="userProfileWidget" style="display: none;">
+      <div class="user-profile-widget" id="userProfileWidget" title="Clic para administrar tu perfil y contraseña" style="display: none;">
         <div class="user-avatar-circle" id="userAvatarCircle">JM</div>
         <div class="user-info-text">
           <span class="user-full-name" id="userFullName">Usuario</span>
           <span class="user-role-badge" id="userRoleBadge">Rol</span>
         </div>
-        <button class="btn-change-password" id="btnOpenChangePassHeader" title="Cambiar mi Contraseña">
+        <button class="btn-profile-manage" id="btnOpenUserProfileHeader" title="Administrar Perfil y Datos">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
           </svg>
         </button>
         <button class="btn-logout" id="btnLogout" title="Cerrar Sesión">
@@ -273,6 +273,212 @@
           <button type="submit" class="btn-primary" id="btnModalSave">Guardar</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- MODAL ADMINISTRACIÓN PERFIL DE USUARIO -->
+  <div class="modal-backdrop" id="userProfileModal">
+    <div class="modal-card" style="max-width: 640px; max-height: 92vh; display: flex; flex-direction: column;">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="width: 36px; height: 36px; border-radius: 8px; background: #e0f2fe; color: #0284c7; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </div>
+          <div>
+            <h3 style="margin: 0; font-size: 1.1rem; font-weight: 700; color: #0f172a;">Administración de Perfil</h3>
+            <span style="font-size: 0.75rem; color: #64748b;">Configura tus datos, contraseña y consulta accesos autorizados</span>
+          </div>
+        </div>
+        <button class="modal-close-btn" id="btnCloseUserProfileModal" title="Cerrar">&times;</button>
+      </div>
+
+      <!-- TABS NAVEGACIÓN -->
+      <div class="profile-nav-tabs">
+        <button type="button" class="profile-nav-tab active" id="tabBtnPersonal" data-tab="tabProfilePersonal">
+          <span>👤 Mis Datos</span>
+        </button>
+        <button type="button" class="profile-nav-tab" id="tabBtnSecurity" data-tab="tabProfileSecurity">
+          <span>🔐 Contraseña & Seguridad</span>
+        </button>
+        <button type="button" class="profile-nav-tab" id="tabBtnAdminUsers" data-tab="tabProfileAdminUsers" style="display: none;">
+          <span>👥 Gestión de Usuarios (Admin)</span>
+        </button>
+      </div>
+
+      <div class="modal-body" style="padding: 18px 20px; overflow-y: auto; flex: 1;">
+        <!-- TAB 1: MIS DATOS -->
+        <div class="profile-tab-pane active" id="tabProfilePersonal">
+          <div class="profile-avatar-banner">
+            <div class="profile-avatar-banner-circle" id="profBannerAvatarCircle">JM</div>
+            <div class="profile-avatar-meta">
+              <div class="profile-avatar-title" id="profBannerName">Jesús Alberto Morales López</div>
+              <div class="profile-avatar-subtitle">
+                <span id="profBannerRole" style="font-weight: 700; color: #0284c7;">Administrador General</span>
+                <span>&bull;</span>
+                <span id="profBannerId" style="color: #64748b;">ID: jmorales</span>
+              </div>
+            </div>
+          </div>
+
+          <form id="formProfilePersonal" style="margin: 0;">
+            <div class="form-group">
+              <label for="profEditName">Nombre Completo del Colaborador</label>
+              <input type="text" id="profEditName" class="form-input" placeholder="Nombre completo" required>
+            </div>
+
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label for="profEditUsername">Nombre de Usuario (Login)</label>
+                <input type="text" id="profEditUsername" class="form-input" placeholder="usuario" required>
+              </div>
+              <div class="form-group">
+                <label for="profEditCode">Código de Empleado / Clave</label>
+                <input type="text" id="profEditCode" class="form-input" placeholder="Ej. SIG-ADM-01" required>
+              </div>
+            </div>
+
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label for="profEditEmail">Correo Electrónico Corporativo</label>
+                <input type="email" id="profEditEmail" class="form-input" placeholder="correo@sigrama.com.mx">
+              </div>
+              <div class="form-group">
+                <label for="profEditDepartment">Departamento / Área</label>
+                <input type="text" id="profEditDepartment" class="form-input" placeholder="Ej. Dirección General, Almacén, Corte y Doblez">
+              </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; margin-top: 14px;">
+              <button type="submit" class="btn-primary" style="background: #002B49; color: white; padding: 9px 20px; border-radius: 8px; font-weight: 600; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                <span>💾 Guardar Datos del Perfil</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- TAB 2: CONTRASEÑA & SEGURIDAD -->
+        <div class="profile-tab-pane" id="tabProfileSecurity">
+          <div class="profile-info-callout">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink: 0; margin-top: 2px;">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            <div>
+              <strong>Seguridad de la Cuenta:</strong> Para actualizar tu contraseña, es obligatorio ingresar tu contraseña anterior para autorizar la actualización.
+            </div>
+          </div>
+
+          <form id="formProfileSecurity" style="margin: 0;">
+            <div class="form-group">
+              <label for="profSecOldPassword">Contraseña Anterior (Actual)</label>
+              <input type="password" id="profSecOldPassword" class="form-input" placeholder="Ingresa tu contraseña actual" required autocomplete="current-password">
+            </div>
+
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label for="profSecNewPassword">Nueva Contraseña</label>
+                <input type="password" id="profSecNewPassword" class="form-input" placeholder="Mínimo 4 caracteres" required autocomplete="new-password">
+              </div>
+              <div class="form-group">
+                <label for="profSecConfirmPassword">Confirmar Nueva Contraseña</label>
+                <input type="password" id="profSecConfirmPassword" class="form-input" placeholder="Repite la nueva contraseña" required autocomplete="new-password">
+              </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; margin-top: 14px;">
+              <button type="submit" class="btn-primary" style="background: #002B49; color: white; padding: 9px 20px; border-radius: 8px; font-weight: 600; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                <span>🔒 Actualizar mi Contraseña</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- TAB 3: GESTIÓN DE USUARIOS (ADMIN) -->
+        <div class="profile-tab-pane" id="tabProfileAdminUsers">
+          <div class="profile-info-callout warning">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink: 0; margin-top: 2px;">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+            <div>
+              <strong>Panel de Administrador General:</strong> Puedes seleccionar a cualquier colaborador para modificar sus datos, restablecer su contraseña directamente o definir sus permisos por aplicación.
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label for="adminSelectUser" style="font-weight: 700; color: #002B49;">Seleccionar Colaborador / Usuario:</label>
+            <select id="adminSelectUser" class="form-input" style="font-weight: 600; font-size: 0.9rem; background-color: #f8fafc; border-color: #0284c7;"></select>
+          </div>
+
+          <form id="formProfileAdminUser" style="margin: 0;">
+            <div class="form-group">
+              <label for="adminEditName">Nombre Completo</label>
+              <input type="text" id="adminEditName" class="form-input" required>
+            </div>
+
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label for="adminEditUsername">Usuario</label>
+                <input type="text" id="adminEditUsername" class="form-input" required>
+              </div>
+              <div class="form-group">
+                <label for="adminEditCode">Código de Empleado</label>
+                <input type="text" id="adminEditCode" class="form-input" required>
+              </div>
+            </div>
+
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label for="adminEditEmail">Correo</label>
+                <input type="email" id="adminEditEmail" class="form-input">
+              </div>
+              <div class="form-group">
+                <label for="adminEditDepartment">Departamento</label>
+                <input type="text" id="adminEditDepartment" class="form-input">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="adminEditNewPass" style="color: #b91c1c; font-weight: 700;">🔑 Asignar Nueva Contraseña (Reseteo sin requerir clave anterior)</label>
+              <input type="text" id="adminEditNewPass" class="form-input" placeholder="Escribe para cambiar la clave de este usuario, o déjalo vacío para mantenerla">
+            </div>
+
+            <div class="form-group" style="margin-top: 10px;">
+              <label style="display: flex; align-items: center; gap: 8px; font-weight: 600; cursor: pointer;">
+                <input type="checkbox" id="adminEditIsAdmin" style="width: 16px; height: 16px;">
+                <span>Otorgar privilegios de Administrador General (Acceso Total al sistema)</span>
+              </label>
+            </div>
+
+            <div style="margin-top: 14px;">
+              <label style="font-weight: 700; color: #0f172a; margin-bottom: 6px; display: block;">Permisos por Aplicación del Catálogo:</label>
+              <div class="permissions-table-wrapper">
+                <table class="permissions-table">
+                  <thead>
+                    <tr>
+                      <th>Aplicación</th>
+                      <th style="width: 150px;">Nivel de Permiso</th>
+                    </tr>
+                  </thead>
+                  <tbody id="adminPermissionsTableBody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; margin-top: 16px;">
+              <button type="submit" class="btn-primary" style="background: #002B49; color: white; padding: 9px 20px; border-radius: 8px; font-weight: 600; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                <span>💾 Guardar Cambios de este Usuario</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
   </div>
 

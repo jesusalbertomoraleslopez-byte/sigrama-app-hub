@@ -149,6 +149,61 @@ def auth_change_password():
 
     return jsonify({"success": True, "message": "Contraseña actualizada exitosamente"})
 
+@app.route("/api/users", methods=["GET"])
+def get_users_list():
+    users = load_users()
+    safe_users = []
+    for u in users:
+        safe_users.append({
+            "id": u.get("id"),
+            "username": u.get("username", u.get("id")),
+            "user_code": u.get("user_code", ""),
+            "name": u.get("name"),
+            "email": u.get("email", ""),
+            "department": u.get("department", ""),
+            "is_global_admin": u.get("is_global_admin", False),
+            "permissions": u.get("permissions", {})
+        })
+    return jsonify({"success": True, "users": safe_users})
+
+@app.route("/api/users/update", methods=["POST"])
+def update_user_profile():
+    data = request.json or {}
+    user_id = (data.get("id") or data.get("user_id") or "").strip().lower()
+    if not user_id:
+        return jsonify({"success": False, "message": "ID de usuario requerido"}), 400
+
+    users = load_users()
+    matched = None
+    for u in users:
+        if u.get("id", "").lower() == user_id:
+            matched = u
+            break
+
+    if not matched:
+        return jsonify({"success": False, "message": "Usuario no encontrado"}), 404
+
+    for field in ["name", "username", "user_code", "email", "department"]:
+        if field in data and data[field] is not None:
+            matched[field] = str(data[field]).strip()
+
+    if "is_global_admin" in data:
+        matched["is_global_admin"] = bool(data["is_global_admin"])
+
+    if "permissions" in data and isinstance(data["permissions"], dict):
+        matched["permissions"] = data["permissions"]
+
+    new_pass = (data.get("new_password") or data.get("password") or "").strip()
+    if new_pass:
+        if len(new_pass) < 4:
+            return jsonify({"success": False, "message": "La nueva contraseña debe tener al menos 4 caracteres"}), 400
+        matched["password"] = new_pass
+
+    with open(USERS_FILE, "w", encoding="utf-8") as f:
+        json.dump(users, f, indent=2, ensure_ascii=False)
+
+    return jsonify({"success": True, "message": "Usuario actualizado exitosamente", "user": matched})
+
 @app.route("/api/apps", methods=["GET"])
 def get_apps():
     user = get_current_user()
