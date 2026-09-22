@@ -102,6 +102,12 @@ standalone_html = f"""
           <input type="password" id="loginPasswordInput" name="password" class="login-input" placeholder="Ingresa tu clave de acceso" required autocomplete="current-password">
         </div>
 
+        <div style="display: flex; justify-content: flex-end; margin-top: -6px; margin-bottom: 14px;">
+          <button type="button" id="btnOpenChangePassLogin" style="background: none; border: none; color: #0284c7; font-size: 0.8rem; font-weight: 600; cursor: pointer; text-decoration: underline; padding: 2px 0;">
+            🔑 ¿Deseas cambiar tu contraseña?
+          </button>
+        </div>
+
         <button type="submit" class="btn-login-submit" id="btnLoginSubmit">
           <span>Ingresar al Portal</span>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -158,6 +164,12 @@ standalone_html = f"""
           <span class="user-full-name" id="userFullName">Usuario</span>
           <span class="user-role-badge" id="userRoleBadge">Rol</span>
         </div>
+        <button class="btn-change-password" id="btnOpenChangePassHeader" title="Cambiar mi Contraseña">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+        </button>
         <button class="btn-logout" id="btnLogout" title="Cerrar Sesión">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
@@ -238,12 +250,109 @@ standalone_html = f"""
     </div>
   </main>
 
+  <!-- MODAL CAMBIAR CONTRASEÑA -->
+  <div class="modal-backdrop" id="changePasswordModal">
+    <div class="modal-card" style="max-width: 440px;">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div style="width: 34px; height: 34px; border-radius: 8px; background: #e0f2fe; color: #0284c7; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+          </div>
+          <div>
+            <h3 style="margin: 0; font-size: 1.05rem; font-weight: 700; color: #0f172a;">Cambiar Contraseña</h3>
+            <span style="font-size: 0.75rem; color: #64748b;">Ingresa tu clave anterior para autorizar el cambio</span>
+          </div>
+        </div>
+        <button class="modal-close-btn" id="btnCloseChangePassModal" title="Cerrar">&times;</button>
+      </div>
+
+      <form id="changePasswordForm" style="margin: 0;">
+        <div class="modal-body" style="padding: 20px;">
+          <div class="form-group">
+            <label for="cpUsernameInput">Usuario o Código Corporativo</label>
+            <input type="text" id="cpUsernameInput" class="form-input" placeholder="Ej. bflores o SIG-COR-03" required autocomplete="username">
+          </div>
+
+          <div class="form-group">
+            <label for="cpOldPasswordInput">Contraseña Anterior (Actual)</label>
+            <input type="password" id="cpOldPasswordInput" class="form-input" placeholder="Ingresa tu contraseña actual" required autocomplete="current-password">
+          </div>
+
+          <div class="form-group">
+            <label for="cpNewPasswordInput">Nueva Contraseña</label>
+            <input type="password" id="cpNewPasswordInput" class="form-input" placeholder="Mínimo 4 caracteres" required autocomplete="new-password">
+          </div>
+
+          <div class="form-group" style="margin-bottom: 8px;">
+            <label for="cpConfirmPasswordInput">Confirmar Nueva Contraseña</label>
+            <input type="password" id="cpConfirmPasswordInput" class="form-input" placeholder="Repite la nueva contraseña" required autocomplete="new-password">
+          </div>
+        </div>
+
+        <div class="modal-footer" style="padding: 14px 20px; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 10px;">
+          <button type="button" class="btn-secondary" id="btnCancelChangePass">Cancelar</button>
+          <button type="submit" class="btn-primary" style="background: #002B49; color: white; padding: 8px 18px; border-radius: 8px; font-weight: 600; border: none; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+            <span>Actualizar Contraseña</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <div class="toast-container" id="toastContainer"></div>
 
   <!-- CLIENT SCRIPT -->
   <script>
     const CATALOG = {json.dumps(catalog_data)};
-    const USERS = {json.dumps(users_data)};
+    const DEFAULT_USERS = {json.dumps(users_data)};
+
+    function getStoredPasswords() {{
+      try {{
+        return JSON.parse(localStorage.getItem("sigrama_custom_passwords") || "{{}}");
+      }} catch(e) {{
+        return {{}};
+      }}
+    }}
+
+    function saveStoredPassword(userId, newPassword) {{
+      const stored = getStoredPasswords();
+      stored[userId] = newPassword;
+      localStorage.setItem("sigrama_custom_passwords", JSON.stringify(stored));
+    }}
+
+    const USERS = DEFAULT_USERS.map(u => {{
+      const customPass = getStoredPasswords()[u.id];
+      if (customPass) {{
+        return Object.assign({{}}, u, {{ password: customPass }});
+      }}
+      return Object.assign({{}}, u);
+    }});
+
+    function handleUpdatePassword(userId, newPassword) {{
+      saveStoredPassword(userId, newPassword);
+      const inMemory = USERS.find(x => x.id === userId);
+      if (inMemory) {{
+        inMemory.password = newPassword;
+      }}
+      if (currentUser && currentUser.id === userId) {{
+        currentUser.password = newPassword;
+        localStorage.setItem("sigrama_hub_user", JSON.stringify(currentUser));
+      }}
+      try {{
+        fetch("/api/auth/change-password", {{
+          method: "POST",
+          headers: {{ "Content-Type": "application/json" }},
+          body: JSON.stringify({{
+            user_id: userId,
+            username: inMemory ? inMemory.username : userId,
+            new_password: newPassword
+          }})
+        }}).catch(() => {{}});
+      }} catch(e) {{}}
+    }}
 
     const ICONS = {{
       "shopping-cart": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>`,
@@ -374,6 +483,128 @@ standalone_html = f"""
         showToast("Sesión cerrada", "info");
         showLogin();
       }});
+
+      // Modal Cambiar Contraseña
+      const changePasswordModal = document.getElementById("changePasswordModal");
+      const btnOpenChangePassLogin = document.getElementById("btnOpenChangePassLogin");
+      const btnOpenChangePassHeader = document.getElementById("btnOpenChangePassHeader");
+      const btnCloseChangePassModal = document.getElementById("btnCloseChangePassModal");
+      const btnCancelChangePass = document.getElementById("btnCancelChangePass");
+      const changePasswordForm = document.getElementById("changePasswordForm");
+      const cpUsernameInput = document.getElementById("cpUsernameInput");
+      const cpOldPasswordInput = document.getElementById("cpOldPasswordInput");
+      const cpNewPasswordInput = document.getElementById("cpNewPasswordInput");
+      const cpConfirmPasswordInput = document.getElementById("cpConfirmPasswordInput");
+
+      function openChangePassModal(prefillUser = "") {{
+        if (cpUsernameInput) {{
+          cpUsernameInput.value = prefillUser;
+          cpUsernameInput.readOnly = !!prefillUser;
+        }}
+        if (cpOldPasswordInput) cpOldPasswordInput.value = "";
+        if (cpNewPasswordInput) cpNewPasswordInput.value = "";
+        if (cpConfirmPasswordInput) cpConfirmPasswordInput.value = "";
+        if (changePasswordModal) {{
+          changePasswordModal.classList.add("active");
+          setTimeout(() => {{
+            if (prefillUser && cpOldPasswordInput) {{
+              cpOldPasswordInput.focus();
+            }} else if (cpUsernameInput) {{
+              cpUsernameInput.focus();
+            }}
+          }}, 100);
+        }}
+      }}
+
+      function closeChangePassModal() {{
+        if (changePasswordModal) changePasswordModal.classList.remove("active");
+      }}
+
+      if (btnOpenChangePassLogin) {{
+        btnOpenChangePassLogin.addEventListener("click", () => {{
+          const currLoginVal = (loginUserInput ? loginUserInput.value : "").trim();
+          openChangePassModal(currLoginVal);
+        }});
+      }}
+
+      if (btnOpenChangePassHeader) {{
+        btnOpenChangePassHeader.addEventListener("click", () => {{
+          const currUserVal = currentUser ? (currentUser.username || currentUser.id) : "";
+          openChangePassModal(currUserVal);
+        }});
+      }}
+
+      if (btnCloseChangePassModal) btnCloseChangePassModal.addEventListener("click", closeChangePassModal);
+      if (btnCancelChangePass) btnCancelChangePass.addEventListener("click", closeChangePassModal);
+
+      if (changePasswordForm) {{
+        changePasswordForm.addEventListener("submit", (e) => {{
+          e.preventDefault();
+          const uInput = (cpUsernameInput ? cpUsernameInput.value : "").trim().toLowerCase();
+          const oldPass = (cpOldPasswordInput ? cpOldPasswordInput.value : "").trim();
+          const newPass = (cpNewPasswordInput ? cpNewPasswordInput.value : "").trim();
+          const confPass = (cpConfirmPasswordInput ? cpConfirmPasswordInput.value : "").trim();
+
+          if (!uInput) {{
+            showToast("Por favor ingresa tu usuario o código", "error");
+            return;
+          }}
+          if (!oldPass) {{
+            showToast("Ingresa tu contraseña actual", "error");
+            return;
+          }}
+          if (!newPass) {{
+            showToast("Ingresa la nueva contraseña", "error");
+            return;
+          }}
+
+          const matched = USERS.find(u => 
+            (u.username && u.username.toLowerCase() === uInput) ||
+            (u.user_code && u.user_code.toLowerCase() === uInput) ||
+            (u.id && u.id.toLowerCase() === uInput)
+          );
+
+          if (!matched) {{
+            showToast("Usuario no encontrado en el sistema", "error");
+            return;
+          }}
+
+          if (matched.password !== oldPass) {{
+            showToast("La contraseña anterior no coincide con la registrada", "error");
+            return;
+          }}
+
+          if (newPass.length < 4) {{
+            showToast("La nueva contraseña debe tener al menos 4 caracteres", "error");
+            return;
+          }}
+
+          if (newPass !== confPass) {{
+            showToast("La confirmación no coincide con la nueva contraseña", "error");
+            return;
+          }}
+
+          if (newPass === oldPass) {{
+            showToast("La nueva contraseña debe ser diferente a la actual", "error");
+            return;
+          }}
+
+          handleUpdatePassword(matched.id, newPass);
+          closeChangePassModal();
+          showToast(`¡Contraseña de ${{matched.name}} actualizada con éxito!`, "success");
+
+          if (window.PasswordCredential && navigator.credentials) {{
+            try {{
+              const cred = new PasswordCredential({{
+                id: matched.username || matched.id,
+                password: newPass,
+                name: matched.name
+              }});
+              navigator.credentials.store(cred);
+            }} catch(err) {{}}
+          }}
+        }});
+      }}
 
       const btnBack = document.getElementById("btnBackToHub");
       if (btnBack) {{

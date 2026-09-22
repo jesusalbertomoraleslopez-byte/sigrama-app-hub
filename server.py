@@ -111,6 +111,44 @@ def auth_me():
         }
     })
 
+@app.route("/api/auth/change-password", methods=["POST"])
+def auth_change_password():
+    data = request.json or {}
+    user_identifier = (data.get("username") or data.get("user_id", "")).strip().lower()
+    old_password = data.get("old_password", "").strip()
+    new_password = data.get("new_password", "").strip()
+
+    if not user_identifier or not new_password:
+        return jsonify({"success": False, "message": "Datos incompletos"}), 400
+
+    if len(new_password) < 4:
+        return jsonify({"success": False, "message": "La nueva contraseña debe tener al menos 4 caracteres"}), 400
+
+    users = load_users()
+    matched = None
+    for u in users:
+        u_id = u.get("id", "").lower()
+        u_name = u.get("username", "").lower()
+        u_code = u.get("user_code", "").lower()
+        if user_identifier in [u_id, u_name, u_code]:
+            matched = u
+            break
+
+    if not matched:
+        return jsonify({"success": False, "message": "Usuario no encontrado"}), 404
+
+    if old_password and matched.get("password") != old_password:
+        return jsonify({"success": False, "message": "La contraseña anterior no coincide"}), 401
+
+    if old_password and old_password == new_password:
+        return jsonify({"success": False, "message": "La nueva contraseña debe ser diferente a la actual"}), 400
+
+    matched["password"] = new_password
+    with open(USERS_FILE, "w", encoding="utf-8") as f:
+        json.dump(users, f, indent=2, ensure_ascii=False)
+
+    return jsonify({"success": True, "message": "Contraseña actualizada exitosamente"})
+
 @app.route("/api/apps", methods=["GET"])
 def get_apps():
     user = get_current_user()

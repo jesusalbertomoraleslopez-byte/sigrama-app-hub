@@ -981,6 +981,24 @@ body {
   color: #93c5fd;
 }
 
+.btn-change-password {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s, background-color 0.15s;
+}
+
+.btn-change-password:hover {
+  color: #38bdf8;
+  background: rgba(255, 255, 255, 0.1);
+}
+
 .btn-logout {
   background: transparent;
   border: none;

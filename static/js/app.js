@@ -185,6 +185,124 @@ function setupEventListeners() {
     }
   });
 
+  // Modal Cambiar Contraseña
+  const changePasswordModal = document.getElementById("changePasswordModal");
+  const btnOpenChangePassLogin = document.getElementById("btnOpenChangePassLogin");
+  const btnOpenChangePassHeader = document.getElementById("btnOpenChangePassHeader");
+  const btnCloseChangePassModal = document.getElementById("btnCloseChangePassModal");
+  const btnCancelChangePass = document.getElementById("btnCancelChangePass");
+  const changePasswordForm = document.getElementById("changePasswordForm");
+  const cpUsernameInput = document.getElementById("cpUsernameInput");
+  const cpOldPasswordInput = document.getElementById("cpOldPasswordInput");
+  const cpNewPasswordInput = document.getElementById("cpNewPasswordInput");
+  const cpConfirmPasswordInput = document.getElementById("cpConfirmPasswordInput");
+
+  function openChangePassModal(prefillUser = "") {
+    if (cpUsernameInput) {
+      cpUsernameInput.value = prefillUser;
+      cpUsernameInput.readOnly = !!prefillUser;
+    }
+    if (cpOldPasswordInput) cpOldPasswordInput.value = "";
+    if (cpNewPasswordInput) cpNewPasswordInput.value = "";
+    if (cpConfirmPasswordInput) cpConfirmPasswordInput.value = "";
+    if (changePasswordModal) {
+      changePasswordModal.classList.add("active");
+      setTimeout(() => {
+        if (prefillUser && cpOldPasswordInput) {
+          cpOldPasswordInput.focus();
+        } else if (cpUsernameInput) {
+          cpUsernameInput.focus();
+        }
+      }, 100);
+    }
+  }
+
+  function closeChangePassModal() {
+    if (changePasswordModal) changePasswordModal.classList.remove("active");
+  }
+
+  if (btnOpenChangePassLogin) {
+    btnOpenChangePassLogin.addEventListener("click", () => {
+      const currLoginVal = loginUserInput ? loginUserInput.value.trim() : "";
+      openChangePassModal(currLoginVal);
+    });
+  }
+
+  if (btnOpenChangePassHeader) {
+    btnOpenChangePassHeader.addEventListener("click", () => {
+      const currUserVal = currentUser ? (currentUser.username || currentUser.id) : "";
+      openChangePassModal(currUserVal);
+    });
+  }
+
+  if (btnCloseChangePassModal) btnCloseChangePassModal.addEventListener("click", closeChangePassModal);
+  if (btnCancelChangePass) btnCancelChangePass.addEventListener("click", closeChangePassModal);
+
+  if (changePasswordForm) {
+    changePasswordForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const uInput = (cpUsernameInput ? cpUsernameInput.value : "").trim();
+      const oldPass = (cpOldPasswordInput ? cpOldPasswordInput.value : "").trim();
+      const newPass = (cpNewPasswordInput ? cpNewPasswordInput.value : "").trim();
+      const confPass = (cpConfirmPasswordInput ? cpConfirmPasswordInput.value : "").trim();
+
+      if (!uInput) {
+        showToast("Por favor ingresa tu usuario o código", "error");
+        return;
+      }
+      if (!oldPass) {
+        showToast("Ingresa tu contraseña actual", "error");
+        return;
+      }
+      if (!newPass) {
+        showToast("Ingresa la nueva contraseña", "error");
+        return;
+      }
+      if (newPass.length < 4) {
+        showToast("La nueva contraseña debe tener al menos 4 caracteres", "error");
+        return;
+      }
+      if (newPass !== confPass) {
+        showToast("La confirmación no coincide con la nueva contraseña", "error");
+        return;
+      }
+      if (newPass === oldPass) {
+        showToast("La nueva contraseña debe ser diferente a la actual", "error");
+        return;
+      }
+
+      try {
+        const res = await fetch("/api/auth/change-password", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            username: uInput,
+            old_password: oldPass,
+            new_password: newPass
+          })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast("✅ Contraseña actualizada correctamente", "success");
+          closeChangePassModal();
+          if (window.PasswordCredential && navigator.credentials) {
+            try {
+              const cred = new PasswordCredential({
+                id: uInput,
+                password: newPass
+              });
+              navigator.credentials.store(cred);
+            } catch (err) {}
+          }
+        } else {
+          showToast(data.message || "Error al actualizar contraseña", "error");
+        }
+      } catch (err) {
+        showToast(`Error de red: ${err.message}`, "error");
+      }
+    });
+  }
+
   // Search input
   searchInput.addEventListener("input", (e) => {
     searchQuery = e.target.value.toLowerCase().trim();
