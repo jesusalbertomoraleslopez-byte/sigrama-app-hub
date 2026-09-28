@@ -234,7 +234,7 @@ def get_apps():
 
         # Inject SSO query parameters into URL
         base_url = item.get("url") or f"http://localhost:{item.get('port')}"
-        if user and (item.get("type") in ["streamlit", "external_url"] or "streamlit.app" in base_url):
+        if user and (item.get("type") in ["streamlit", "external_url"] or "streamlit.app" in base_url or "run.app" in base_url):
             params = {
                 "sso_user": user["name"],
                 "sso_role": user_role,
