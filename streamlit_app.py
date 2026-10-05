@@ -57,6 +57,21 @@ components.html("""
 
 BASE_DIR = Path(__file__).resolve().parent
 
+# Sincronización transparente con Google Cloud Storage si existe la variable GCS_BUCKET
+GCS_BUCKET = os.environ.get("GCS_BUCKET", "").strip()
+if GCS_BUCKET:
+    try:
+        from google.cloud import storage
+        client = storage.Client()
+        bucket = client.bucket(GCS_BUCKET)
+        for blob_name, rel_path in [("data/catalog.json", BASE_DIR / "data" / "catalog.json"), ("data/users.json", BASE_DIR / "data" / "users.json")]:
+            blob = bucket.blob(blob_name)
+            if blob.exists():
+                rel_path.parent.mkdir(parents=True, exist_ok=True)
+                blob.download_to_filename(str(rel_path))
+    except Exception as e:
+        print(f"[GCS Hub] Aviso al sincronizar desde bucket: {e}")
+
 def load_file(p):
     return p.read_text(encoding="utf-8-sig") if p.exists() else ""
 
