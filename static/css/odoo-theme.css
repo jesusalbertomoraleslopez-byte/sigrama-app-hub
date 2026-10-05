@@ -1221,3 +1221,24 @@ body {
   outline: none;
 }
 
+/* Google Cloud Platform Badges and Buttons */
+.cloud-badge-gcp {
+  background: #eff6ff !important;
+  color: #1d4ed8 !important;
+  border-color: #bfdbfe !important;
+  font-weight: 600 !important;
+}
+
+.btn-gcp-cloud {
+  color: #4285F4 !important;
+  background: #eff6ff;
+  border-color: #dbeafe;
+}
+
+.btn-gcp-cloud:hover {
+  background: #dbeafe !important;
+  border-color: #93c5fd !important;
+  transform: scale(1.08);
+}
+
+

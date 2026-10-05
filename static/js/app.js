@@ -765,6 +765,11 @@ function renderApps() {
     const userRole = app.user_role || "Usuario";
     const roleClass = userRole === "Admin" ? "admin" : "usuario";
 
+    const isGcp = app.cloud_url && (app.cloud_url.includes("run.app") || app.cloud_url.includes("google"));
+    const cloudBadgeClass = isGcp ? 'cloud-badge-gcp' : (app.cloud_url ? 'cloud-badge-st' : 'cloud-badge-local');
+    const gcpIconSvg = `<svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z" fill="#4285F4"/><path d="M19 18H6c-2.21 0-4-1.79-4-4 0-2.05 1.53-3.76 3.56-3.97l1.07-.11.5-.95C8.08 7.14 9.94 6 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5 1.53.11c1.56.1 2.78 1.41 2.78 2.96 0 1.65-1.35 3-3 3z" fill="#fff" opacity="0.2"/></svg>`;
+    const stCloudIconSvg = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>`;
+
     return `
       <div class="app-card" onclick="handleAppPrimaryClick('${app.id}')">
         <div class="app-card-top">
@@ -785,7 +790,7 @@ function renderApps() {
           <div class="app-desc">${app.description || ''}</div>
         </div>
         <div class="app-card-footer" onclick="event.stopPropagation()">
-          <span class="app-meta-port">${app.port ? 'Puerto ' + app.port : 'Externo'}</span>
+          <span class="app-meta-port ${cloudBadgeClass}">${isGcp ? '☁️ Google Cloud' : (app.cloud_url ? 'Nube / Cloud' : (app.port ? 'Puerto ' + app.port : 'Externo'))}</span>
           <div class="app-actions">
             ${renderControlButtons(app, isOnline, isStarting)}
             ${currentUser && currentUser.is_global_admin ? `
@@ -794,8 +799,8 @@ function renderApps() {
               </button>
             ` : ''}
             ${app.cloud_url ? `
-              <button class="btn-icon-action" title="Abrir en la Nube (Cloud Run / Streamlit)" onclick="launchCloudApp('${app.id}')">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
+              <button class="btn-icon-action ${isGcp ? 'btn-gcp-cloud' : ''}" title="${isGcp ? 'Abrir en Google Cloud Platform (Cloud Run)' : 'Abrir en la Nube (Streamlit Cloud)'}" onclick="launchCloudApp('${app.id}')">
+                ${isGcp ? gcpIconSvg : stCloudIconSvg}
               </button>
             ` : ''}
             <button class="btn-icon-action" title="Abrir en Nueva Pestaña" onclick="launchInNewTab('${app.id}')">
