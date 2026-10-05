@@ -162,7 +162,7 @@
     "entry_file": "app_consultas.py",
     "port": 8510,
     "url": "http://localhost:8510",
-    "cloud_url": "https://remisiones.streamlit.app/",
+    "cloud_url": "https://sigrama-piezas-sgp-500497385665.us-central1.run.app/",
     "icon": "globe",
     "bg_gradient": "linear-gradient(135deg, #0284c7 0%, #0369a1 100%)",
     "badge": "Consultas",
