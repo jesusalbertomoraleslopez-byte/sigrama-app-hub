@@ -18,7 +18,8 @@
       "prenomina": "Admin",
       "matriz_mce": "Admin",
       "remisiones_consultas": "Admin",
-      "requisiciones": "Admin"
+      "requisiciones": "Admin",
+      "activos": "Admin"
     }
   },
   {
@@ -40,7 +41,8 @@
       "prenomina": "Usuario",
       "matriz_mce": "Usuario",
       "remisiones_consultas": "Admin",
-      "requisiciones": "Admin"
+      "requisiciones": "Admin",
+      "activos": "Usuario"
     }
   },
   {
@@ -62,7 +64,8 @@
       "prenomina": "Usuario",
       "matriz_mce": "Usuario",
       "remisiones_consultas": "Usuario",
-      "requisiciones": "Admin"
+      "requisiciones": "Admin",
+      "activos": "Usuario"
     }
   },
   {
@@ -84,7 +87,8 @@
       "prenomina": "Usuario",
       "matriz_mce": "Usuario",
       "remisiones_consultas": "Usuario",
-      "requisiciones": "Admin"
+      "requisiciones": "Admin",
+      "activos": "Usuario"
     }
   },
   {
@@ -106,7 +110,8 @@
       "prenomina": "Usuario",
       "matriz_mce": "Usuario",
       "remisiones_consultas": "Usuario",
-      "requisiciones": "Admin"
+      "requisiciones": "Admin",
+      "activos": "Usuario"
     }
   },
   {
@@ -128,7 +133,8 @@
       "prenomina": "N/A",
       "matriz_mce": "N/A",
       "remisiones_consultas": "Usuario",
-      "requisiciones": "Usuario"
+      "requisiciones": "Usuario",
+      "activos": "Usuario"
     }
   },
   {
@@ -150,7 +156,8 @@
       "prenomina": "N/A",
       "matriz_mce": "N/A",
       "remisiones_consultas": "Usuario",
-      "requisiciones": "Usuario"
+      "requisiciones": "Usuario",
+      "activos": "Usuario"
     }
   },
   {
@@ -172,7 +179,8 @@
       "prenomina": "N/A",
       "matriz_mce": "N/A",
       "remisiones_consultas": "Usuario",
-      "requisiciones": "Usuario"
+      "requisiciones": "Usuario",
+      "activos": "Usuario"
     }
   },
   {
@@ -194,7 +202,8 @@
       "prenomina": "N/A",
       "matriz_mce": "N/A",
       "remisiones_consultas": "Usuario",
-      "requisiciones": "Usuario"
+      "requisiciones": "Usuario",
+      "activos": "Usuario"
     }
   },
   {
@@ -216,7 +225,8 @@
       "prenomina": "N/A",
       "matriz_mce": "N/A",
       "remisiones_consultas": "Usuario",
-      "requisiciones": "Usuario"
+      "requisiciones": "Usuario",
+      "activos": "Usuario"
     }
   },
   {
@@ -238,7 +248,8 @@
       "prenomina": "N/A",
       "matriz_mce": "N/A",
       "remisiones_consultas": "Usuario",
-      "requisiciones": "Usuario"
+      "requisiciones": "Usuario",
+      "activos": "Usuario"
     }
   }
 ]
