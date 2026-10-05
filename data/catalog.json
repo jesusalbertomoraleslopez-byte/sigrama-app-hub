@@ -94,7 +94,7 @@
     "entry_file": "app.py",
     "port": 8505,
     "url": "http://localhost:8505",
-    "cloud_url": "https://incoming-calidad.streamlit.app/",
+    "cloud_url": "https://sigrama-incoming-calidad-500497385665.us-central1.run.app/",
     "icon": "shield-check",
     "bg_gradient": "linear-gradient(135deg, #11998e 0%, #38ef7d 100%)",
     "badge": "Inspección",
