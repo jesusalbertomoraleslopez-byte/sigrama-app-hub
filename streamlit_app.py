@@ -11,7 +11,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 
 st.set_page_config(
-    page_title="SIGRAMA - Portal de Aplicaciones",
+    page_title="SIGRAMA - Aplicación Orquestadora",
     page_icon="🏭",
     layout="wide",
     initial_sidebar_state="collapsed"
@@ -88,7 +88,7 @@ standalone_html = f"""
   <div class="login-overlay" id="loginOverlay" style="display: none;">
     <div class="login-card">
       <img src="data:image/png;base64,{b64_logo}" alt="SIGRAMA" class="login-brand-logo">
-      <h2 class="login-title">Acceso Concentradora</h2>
+      <h2 class="login-title">Aplicación Orquestadora</h2>
       <p class="login-subtitle">Ingresa tus credenciales corporativas autorizadas</p>
 
       <form class="login-form" id="loginForm" method="POST" action="#">
@@ -133,7 +133,7 @@ standalone_html = f"""
       <div class="brand-container" id="brandHomeLink" onclick="closeWorkspace()">
         <img src="data:image/png;base64,{b64_logo}" alt="SIGRAMA" class="brand-logo">
         <div class="brand-title">
-          SIGRAMA <span class="brand-badge">HUB</span>
+          SIGRAMA <span class="brand-badge">ORQUESTADOR</span>
         </div>
       </div>
     </div>
