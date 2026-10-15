@@ -185,5 +185,23 @@
     "badge": "Activos",
     "enabled": true,
     "auto_start": true
+  },
+  {
+    "id": "gcp_cost_monitor",
+    "name": "Monitoreo de Costos GCP",
+    "category": "Administración & Finanzas",
+    "description": "Auditoría en tiempo real del gasto diario en créditos GCP, horas de cómputo y salud de microservicios.",
+    "type": "internal",
+    "path": "",
+    "entry_file": "",
+    "port": 0,
+    "url": "#",
+    "cloud_url": "#",
+    "icon": "bar-chart-2",
+    "bg_gradient": "linear-gradient(135deg, #059669 0%, #10b981 100%)",
+    "badge": "En Vivo (GCP)",
+    "enabled": true,
+    "auto_start": false
   }
 ]
+
