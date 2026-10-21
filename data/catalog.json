@@ -19,7 +19,7 @@
   {
     "id": "po_tracker",
     "name": "PO Tracker & Requerimientos",
-    "category": "Compras & Proyectos",
+    "category": "Ventas",
     "description": "Seguimiento de Órdenes de Compra, requerimientos, dossiers técnicos y sincronización.",
     "type": "streamlit",
     "path": "C:\\Users\\albertol\\.gemini\\antigravity\\scratch\\sigrama_po_tracker",
