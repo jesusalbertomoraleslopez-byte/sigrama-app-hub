@@ -8,6 +8,7 @@ import psutil
 from urllib.parse import urlencode
 from flask import Flask, render_template, jsonify, request, session
 from process_manager import ProcessManager
+from gcp_cost_monitor import get_gcp_cost_metrics
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
 app.secret_key = "sigrama_hub_super_secret_sso_key_2026"
@@ -315,6 +316,14 @@ def delete_app_endpoint(app_id):
     catalog = [a for a in catalog if a.get("id") != app_id]
     save_catalog(catalog)
     return jsonify({"success": True, "message": "Aplicación eliminada"})
+
+@app.route("/api/gcp-costs", methods=["GET"])
+def gcp_costs_endpoint():
+    try:
+        metrics = get_gcp_cost_metrics()
+        return jsonify({"success": True, "metrics": metrics})
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 500
 
 @app.route("/api/system/stats", methods=["GET"])
 def system_stats():

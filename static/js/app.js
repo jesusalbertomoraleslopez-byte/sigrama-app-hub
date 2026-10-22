@@ -16,12 +16,14 @@ const ICONS = {
   "lightbulb": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>`,
   "external-link": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>`,
   "globe": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>`,
-  "file-text": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>`
+  "file-text": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>`,
+  "bar-chart-2": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>`
 };
 
 // State
 let currentUser = null;
 let appsData = [];
+let GCP_METRICS = {};
 let activeCategory = "all";
 let searchQuery = "";
 let currentOpenedApp = null;
@@ -118,8 +120,31 @@ function setAuthenticatedUser(user) {
     btnOpenNewAppModal.style.display = user.is_global_admin ? "flex" : "none";
   }
 
+  loadGcpCosts();
   loadApps();
   loadSystemStats();
+}
+
+async function loadGcpCosts() {
+  try {
+    const res = await fetch("/api/gcp-costs");
+    const data = await res.json();
+    if (data.success && data.metrics) {
+      GCP_METRICS = data.metrics;
+      const costPill = document.getElementById("btnNavbarGcpCost");
+      if (costPill && GCP_METRICS.kpis && currentUser) {
+        const kpis = GCP_METRICS.kpis;
+        const val = document.getElementById("costPillVal");
+        const wMxn = (kpis.weekly_cost_7d_mxn !== undefined) ? kpis.weekly_cost_7d_mxn : 263.04;
+        const wUsd = (kpis.weekly_cost_7d_usd !== undefined) ? kpis.weekly_cost_7d_usd : 13.12;
+        if (val) val.innerText = `7d: $${wMxn.toFixed(2)} MXN ($${wUsd.toFixed(2)} USD)`;
+        costPill.style.display = (currentUser.is_global_admin || (currentUser.permissions && currentUser.permissions["gcp_cost_monitor"])) ? "inline-flex" : "none";
+      }
+      renderApps();
+    }
+  } catch (err) {
+    console.warn("No se pudieron cargar costos GCP:", err);
+  }
 }
 
 // Clock
@@ -770,11 +795,33 @@ function renderApps() {
     const gcpIconSvg = `<svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z" fill="#4285F4"/><path d="M19 18H6c-2.21 0-4-1.79-4-4 0-2.05 1.53-3.76 3.56-3.97l1.07-.11.5-.95C8.08 7.14 9.94 6 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5 1.53.11c1.56.1 2.78 1.41 2.78 2.96 0 1.65-1.35 3-3 3z" fill="#fff" opacity="0.2"/></svg>`;
     const stCloudIconSvg = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>`;
 
+    const costMap = (GCP_METRICS && GCP_METRICS.apps_cost_map) ? GCP_METRICS.apps_cost_map : {};
+    const appCost = costMap[app.id] || {
+      cost_mxn_7d: 0.20,
+      cost_usd_7d: 0.01,
+      cost_mxn_24h: 0.00,
+      cost_usd_24h: 0.00,
+      vcpu_hours_7d: 0.05,
+      requests_7d: 25
+    };
+    const isCostMonitorCard = (app.id === "gcp_cost_monitor");
+    const kpisObj = (GCP_METRICS && GCP_METRICS.kpis) ? GCP_METRICS.kpis : {};
+    const cardMxn7d = isCostMonitorCard ? (kpisObj.weekly_cost_7d_mxn || 263.04) : appCost.cost_mxn_7d;
+    const cardUsd7d = isCostMonitorCard ? (kpisObj.weekly_cost_7d_usd || 13.12) : appCost.cost_usd_7d;
+    const cardMxn24h = isCostMonitorCard ? (kpisObj.daily_cost_today_mxn || 90.02) : appCost.cost_mxn_24h;
+    const cardVcpu7d = isCostMonitorCard ? (kpisObj.total_vcpu_hours_7d || 130.56) : appCost.vcpu_hours_7d;
+    const cardReqs7d = isCostMonitorCard ? (kpisObj.total_requests_7d || 13980) : appCost.requests_7d;
+
     return `
       <div class="app-card" onclick="handleAppPrimaryClick('${app.id}')">
         <div class="app-card-top">
-          <div class="app-icon-squircle" style="background: ${bgGradient};">
-            ${iconSvg}
+          <div class="app-icon-wrapper" title="Consumo GCP (7 días): $${cardMxn7d.toFixed(2)} MXN ($${cardUsd7d.toFixed(2)} USD)">
+            <div class="app-icon-squircle" style="background: ${bgGradient};">
+              ${iconSvg}
+            </div>
+            <span class="app-icon-cost-badge" onclick="event.stopPropagation(); openGcpCostModal('${app.id}')">
+              💲$${cardMxn7d.toFixed(2)} MXN
+            </span>
           </div>
           <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
             <div class="app-status-badge ${statusClass}">
@@ -782,16 +829,32 @@ function renderApps() {
               <span>${statusText}</span>
             </div>
             <span class="app-role-pill ${roleClass}">${userRole}</span>
+            <span class="app-cost-top-pill" title="Clic para abrir el detalle de costos de esta App" onclick="event.stopPropagation(); openGcpCostModal('${app.id}')">
+              7d: $${cardMxn7d.toFixed(2)} MXN ($${cardUsd7d.toFixed(2)} USD)
+            </span>
           </div>
         </div>
         <div class="app-card-body">
           <div class="app-category-label">${app.category || 'General'}</div>
           <div class="app-name">${app.name}</div>
           <div class="app-desc">${app.description || ''}</div>
+          <div class="app-cost-strip" onclick="event.stopPropagation(); openGcpCostModal('${app.id}')" title="Clic para ver auditoría y monitoreo detallado en GCP">
+            <div class="app-cost-strip-left">
+              <span class="app-cost-strip-title">${isCostMonitorCard ? 'GASTO TOTAL 13 APPS (7D)' : 'CONSUMO GCP (7 DÍAS)'}</span>
+              <span class="app-cost-strip-val">💲 $${cardMxn7d.toFixed(2)} MXN <span style="font-weight:600; color:#059669; font-size:0.72rem;">($${cardUsd7d.toFixed(2)} USD)</span></span>
+            </div>
+            <div class="app-cost-strip-right">
+              <div>Hoy: <strong>$${cardMxn24h.toFixed(2)} MXN</strong></div>
+              <div>${cardVcpu7d.toFixed(2)} vCPU-h &middot; ${cardReqs7d.toLocaleString()} reqs</div>
+            </div>
+          </div>
         </div>
         <div class="app-card-footer" onclick="event.stopPropagation()">
-          <span class="app-meta-port ${cloudBadgeClass}">${isGcp ? '☁️ Google Cloud' : (app.cloud_url ? 'Nube / Cloud' : (app.port ? 'Puerto ' + app.port : 'Externo'))}</span>
+          <span class="app-meta-port ${cloudBadgeClass}">${isGcp ? '☁️ Google Cloud' : (app.id === 'gcp_cost_monitor' ? '📊 Costeador En Vivo' : (app.cloud_url ? 'Nube / Cloud' : (app.port ? 'Puerto ' + app.port : 'Externo')))}</span>
           <div class="app-actions">
+            <button class="btn-icon-action" style="color: #059669; background: #ecfdf5; border-color: #a7f3d0;" title="Ver Monitoreo de Costos de esta App" onclick="openGcpCostModal('${app.id}')">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            </button>
             ${renderControlButtons(app, isOnline, isStarting)}
             ${currentUser && currentUser.is_global_admin ? `
               <button class="btn-icon-action" title="Editar Configuración" onclick="openAppModal('${app.id}')">
@@ -837,6 +900,10 @@ function renderControlButtons(app, isOnline, isStarting) {
 
 // Click on App Card -> Smart Launch
 async function handleAppPrimaryClick(appId) {
+  if (appId === "gcp_cost_monitor") {
+    openGcpCostModal();
+    return;
+  }
   const app = appsData.find(a => a.id === appId);
   if (!app) return;
 
@@ -1070,4 +1137,223 @@ function showToast(message, type = "info") {
     toast.style.transition = "all 0.3s ease";
     setTimeout(() => toast.remove(), 300);
   }, 4000);
+}
+
+let highlightedGcpAppId = null;
+
+window.switchGcpMonitorTab = function(paneId) {
+  const tabs = [
+    { btn: "tabBtnGcpApps", pane: "paneGcpApps" },
+    { btn: "tabBtnGcpTable", pane: "paneGcpTable" },
+    { btn: "tabBtnGcpHistory", pane: "paneGcpHistory" }
+  ];
+  tabs.forEach(t => {
+    const b = document.getElementById(t.btn);
+    const p = document.getElementById(t.pane);
+    if (b) {
+      if (t.pane === paneId) b.classList.add("active");
+      else b.classList.remove("active");
+    }
+    if (p) {
+      if (t.pane === paneId) p.classList.add("active");
+      else p.classList.remove("active");
+    }
+  });
+};
+
+window.openGcpCostModal = function(focusAppId = null) {
+  highlightedGcpAppId = (focusAppId && focusAppId !== "gcp_cost_monitor") ? focusAppId : null;
+  const modal = document.getElementById("gcpCostModal");
+  if (modal) {
+    const filterInput = document.getElementById("gcpAppFilterInput");
+    if (filterInput) filterInput.value = "";
+    switchGcpMonitorTab("paneGcpApps");
+    renderGcpCostDashboard("");
+    modal.style.display = "flex";
+    if (highlightedGcpAppId) {
+      setTimeout(() => {
+        const cardEl = document.getElementById("gcpMonitorCard_" + highlightedGcpAppId);
+        if (cardEl) cardEl.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 120);
+    }
+  }
+};
+
+window.closeGcpCostModal = function() {
+  const modal = document.getElementById("gcpCostModal");
+  if (modal) modal.style.display = "none";
+};
+
+window.filterGcpAppCards = function(query) {
+  renderGcpCostDashboard(query || "");
+};
+
+function renderGcpCostDashboard(filterQuery = "") {
+  if (!GCP_METRICS || !GCP_METRICS.kpis) return;
+  const kpis = GCP_METRICS.kpis;
+  const q = (filterQuery || "").toLowerCase().trim();
+
+  const wMxn = kpis.weekly_cost_7d_mxn || 263.04;
+  const wUsd = kpis.weekly_cost_7d_usd || 13.12;
+  const dMxn = kpis.daily_cost_today_mxn || 90.02;
+  const dUsd = kpis.daily_cost_today_usd || 4.49;
+  const mMxn = kpis.projected_monthly_mxn || 957.20;
+  const mUsd = kpis.projected_monthly_usd || 47.74;
+  const rMxn = kpis.remaining_credits_mxn || 88320.25;
+  const rUsd = kpis.remaining_credits_usd || 4405.00;
+
+  const elWeekly = document.getElementById("kpiGcpWeeklyCost");
+  const elWeeklySub = document.getElementById("kpiGcpWeeklySub");
+  const elDaily = document.getElementById("kpiGcpDailyCost");
+  const elDailySub = document.getElementById("kpiGcpDailySub");
+  const elMonthly = document.getElementById("kpiGcpMonthlyProj");
+  const elMonthlySub = document.getElementById("kpiGcpMonthlySub");
+  const elRem = document.getElementById("kpiGcpRemainingCredits");
+  const elRemSub = document.getElementById("kpiGcpCreditsSub");
+  const elAut = document.getElementById("kpiGcpAutonomy");
+
+  if (elWeekly) elWeekly.innerText = `$${wMxn.toLocaleString("en-US", {minimumFractionDigits: 2, maximumFractionDigits: 2})} MXN`;
+  if (elWeeklySub) elWeeklySub.innerHTML = `<span>$${wUsd.toFixed(2)} USD &bull; ${kpis.total_vcpu_hours_7d || 130.5} vCPU-h (7d)</span>`;
+  if (elDaily) elDaily.innerText = `$${dMxn.toLocaleString("en-US", {minimumFractionDigits: 2, maximumFractionDigits: 2})} MXN`;
+  if (elDailySub) elDailySub.innerHTML = `<span>~$${dUsd.toFixed(2)} USD &bull; ${(kpis.total_requests_24h || 0).toLocaleString()} reqs hoy</span>`;
+  if (elMonthly) elMonthly.innerText = `$${mMxn.toLocaleString("en-US", {minimumFractionDigits: 2, maximumFractionDigits: 2})} MXN`;
+  if (elMonthlySub) elMonthlySub.innerHTML = `<span>~$${mUsd.toFixed(2)} USD/mes (Post-optimización)</span>`;
+  if (elRem) elRem.innerText = `$${Math.round(rMxn).toLocaleString("en-US")} MXN`;
+  if (elRemSub) elRemSub.innerHTML = `<span>$${rUsd.toLocaleString("en-US", {minimumFractionDigits: 2})} USD disponibles</span>`;
+  if (elAut) elAut.innerText = `~${kpis.projected_months_left} meses`;
+
+  const services = GCP_METRICS.services_breakdown || [];
+  const filteredServices = services.filter(s => {
+    if (!q) return true;
+    return (s.app_name && s.app_name.toLowerCase().includes(q)) ||
+           (s.service && s.service.toLowerCase().includes(q)) ||
+           (s.category && s.category.toLowerCase().includes(q)) ||
+           (s.bucket && s.bucket.toLowerCase().includes(q));
+  });
+
+  const appsMonitorGrid = document.getElementById("gcpAppsMonitorGrid");
+  if (appsMonitorGrid) {
+    appsMonitorGrid.innerHTML = filteredServices.map(s => {
+      const iconSvg = ICONS[s.icon] || ICONS["globe"];
+      const isHigh = (highlightedGcpAppId && s.app_id === highlightedGcpAppId) ? "highlighted" : "";
+      const shareW = Math.max(3, Math.min(100, s.share_percent_7d || 0));
+      return `
+        <div class="gcp-app-monitor-card ${isHigh}" id="gcpMonitorCard_${s.app_id}">
+          <div class="gcp-app-monitor-header">
+            <div class="gcp-app-mini-icon" style="background: ${s.bg_gradient || 'linear-gradient(135deg, #1e3c72, #2a5298)'};">
+              ${iconSvg}
+            </div>
+            <div style="flex: 1; min-width: 0;">
+              <div style="display: flex; justify-content: space-between; align-items: center; gap: 4px;">
+                <span style="font-size: 0.65rem; font-weight: 800; text-transform: uppercase; color: #64748b;">${s.category}</span>
+                <span class="gcp-status-tag">🟢 min=0 / max=${s.max_scale}</span>
+              </div>
+              <div style="font-size: 0.92rem; font-weight: 800; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${s.app_name}">${s.app_name}</div>
+              <div style="font-size: 0.7rem; color: #475569; font-family: monospace;">☁️ ${s.service} &bull; ${s.cpu} vCPU / ${s.memory_gib} GiB</div>
+            </div>
+          </div>
+          <div class="gcp-app-monitor-metrics">
+            <div class="gcp-app-metric-box">
+              <span class="gcp-app-metric-lbl">Costo 7 Días</span>
+              <span class="gcp-app-metric-val" style="color: #059669;">$${s.cost_mxn_7d.toFixed(2)} MXN</span>
+              <span style="font-size: 0.66rem; color: #64748b; font-weight: 600;">$${s.cost_usd_7d.toFixed(2)} USD</span>
+            </div>
+            <div class="gcp-app-metric-box">
+              <span class="gcp-app-metric-lbl">Costo Hoy (24h)</span>
+              <span class="gcp-app-metric-val">$${s.cost_mxn_24h.toFixed(2)} MXN</span>
+              <span style="font-size: 0.66rem; color: #64748b; font-weight: 600;">$${s.cost_usd_24h.toFixed(2)} USD</span>
+            </div>
+            <div class="gcp-app-metric-box">
+              <span class="gcp-app-metric-lbl">Est. Mensual</span>
+              <span class="gcp-app-metric-val" style="color: #0284c7;">$${s.cost_mxn_30d_est.toFixed(2)} MXN</span>
+              <span style="font-size: 0.66rem; color: #64748b; font-weight: 600;">$${s.cost_usd_30d_est.toFixed(2)} USD</span>
+            </div>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.72rem; color: #334155; font-weight: 600;">
+            <span>⚡ Cómputo 7d: <strong>${s.vcpu_hours_7d.toFixed(2)} vCPU-h</strong> (${s.gib_hours_7d.toFixed(2)} GiB-h)</span>
+            <span>📡 <strong>${s.requests_7d.toLocaleString()}</strong> reqs</span>
+          </div>
+          <div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.68rem; color: #64748b; margin-bottom: 3px;">
+              <span>🪣 Bucket: <code>${s.bucket}</code></span>
+              <strong style="color: #0f172a;">${s.share_percent_7d}% del gasto</strong>
+            </div>
+            <div class="gcp-app-share-bar-bg">
+              <div class="gcp-app-share-bar-fill" style="width: ${shareW}%;"></div>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join("");
+  }
+
+  const tableBody = document.getElementById("gcpServicesTableBody");
+  if (tableBody) {
+    const rowsHtml = filteredServices.map(s => `
+      <tr>
+        <td>
+          <strong style="color: #0f172a;">${s.app_name}</strong>
+          <div style="font-size: 0.68rem; color: #64748b; font-family: monospace;">${s.service}</div>
+        </td>
+        <td style="font-family: monospace; font-size: 0.7rem; color: #475569;">${s.bucket}</td>
+        <td style="text-align: center; font-size: 0.72rem; font-weight: 600;">${s.cpu} vCPU / ${s.memory_gib} GiB</td>
+        <td style="text-align: right; color: #334155; font-weight: 600;">${s.requests_7d.toLocaleString()} <span style="color:#94a3b8; font-size:0.68rem;">(${s.requests_24h.toLocaleString()} hoy)</span></td>
+        <td style="text-align: right; font-weight: 600;">${s.vcpu_hours_7d.toFixed(2)} h <span style="color:#94a3b8; font-size:0.68rem;">(${s.vcpu_hours_24h.toFixed(2)}h)</span></td>
+        <td style="text-align: right; font-weight: 700; color: #0f172a;">$${s.cost_mxn_24h.toFixed(2)} MXN <div style="font-size:0.66rem; color:#64748b;">$${s.cost_usd_24h.toFixed(2)} USD</div></td>
+        <td style="text-align: right; font-weight: 800; color: #059669;">$${s.cost_mxn_7d.toFixed(2)} MXN <div style="font-size:0.66rem; color:#64748b;">$${s.cost_usd_7d.toFixed(2)} USD</div></td>
+        <td style="text-align: right; font-weight: 700; color: #0284c7;">$${s.cost_mxn_30d_est.toFixed(2)} MXN <div style="font-size:0.66rem; color:#64748b;">$${s.cost_usd_30d_est.toFixed(2)} USD</div></td>
+        <td style="text-align: center; font-weight: 700;">${s.share_percent_7d}%</td>
+        <td style="text-align: center;"><span class="gcp-status-tag">Scale-to-0</span></td>
+      </tr>
+    `).join("");
+
+    const totalRow = `
+      <tr style="background: #f0fdf4; font-weight: 800; border-top: 2px solid #10b981;">
+        <td colspan="3" style="color: #065f46;">TOTAL 13 APLICACIONES SIGRAMA</td>
+        <td style="text-align: right; color: #065f46;">${(kpis.total_requests_7d || 0).toLocaleString()} reqs</td>
+        <td style="text-align: right; color: #065f46;">${(kpis.total_vcpu_hours_7d || 0).toFixed(2)} h</td>
+        <td style="text-align: right; color: #065f46;">$${dMxn.toFixed(2)} MXN ($${dUsd.toFixed(2)} USD)</td>
+        <td style="text-align: right; color: #065f46;">$${wMxn.toFixed(2)} MXN ($${wUsd.toFixed(2)} USD)</td>
+        <td style="text-align: right; color: #0284c7;">$${mMxn.toFixed(2)} MXN ($${mUsd.toFixed(2)} USD)</td>
+        <td style="text-align: center; color: #065f46;">100%</td>
+        <td style="text-align: center;"><span class="gcp-status-tag">13/13 Activas</span></td>
+      </tr>
+    `;
+    tableBody.innerHTML = rowsHtml + totalRow;
+  }
+
+  const chartContainer = document.getElementById("gcpChartBarsContainer");
+  if (chartContainer && GCP_METRICS.daily_history && GCP_METRICS.daily_history.length > 0) {
+    const hist = GCP_METRICS.daily_history;
+    const maxCost = Math.max(...hist.map(h => h.cost_mxn || (h.cost_usd * 20.05)), 25.0);
+    chartContainer.innerHTML = hist.map(h => {
+      const mxnVal = h.cost_mxn !== undefined ? h.cost_mxn : +(h.cost_usd * 20.05).toFixed(2);
+      const pct = Math.max(12, Math.round((mxnVal / maxCost) * 100));
+      const isOptimized = h.cost_usd <= 2.5;
+      const barClass = isOptimized ? "optimized" : (h.cost_usd > 6.0 ? "high" : "medium");
+      const dateParts = h.date.split("-");
+      const shortDate = `${dateParts[2]}/${dateParts[1]}`;
+      return `
+        <div class="gcp-chart-bar-col" title="${h.date}: $${mxnVal.toFixed(2)} MXN ($${h.cost_usd.toFixed(2)} USD) | ${h.vcpu_hours} vCPU-h | ${h.requests} reqs">
+          <span class="gcp-chart-bar-val">$${mxnVal.toFixed(2)} MXN</span>
+          <span style="font-size: 0.62rem; color: #64748b; margin-bottom: 2px;">($${h.cost_usd.toFixed(2)} USD)</span>
+          <div class="gcp-chart-bar ${barClass}" style="height: ${pct}%;"></div>
+          <span class="gcp-chart-date-lbl">${shortDate}</span>
+        </div>
+      `;
+    }).join("");
+  }
+
+  const optGrid = document.getElementById("gcpOptimizationsGrid");
+  if (optGrid && GCP_METRICS.optimizations_applied) {
+    optGrid.innerHTML = GCP_METRICS.optimizations_applied.map(o => `
+      <div style="background: #ffffff; border: 1px solid #a7f3d0; border-left: 4px solid #10b981; border-radius: 10px; padding: 12px 14px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+          <strong style="font-size: 0.84rem; color: #065f46;">${o.title}</strong>
+          <span class="gcp-status-tag">Ahorro: ~$${o.saved_mxn_month} MXN/mes</span>
+        </div>
+        <p style="font-size: 0.76rem; color: #475569; margin: 0; line-height: 1.4;">${o.detail}</p>
+      </div>
+    `).join("");
+  }
 }

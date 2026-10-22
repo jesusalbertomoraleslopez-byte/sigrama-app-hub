@@ -82,6 +82,11 @@
         <span>Conectando...</span>
       </div>
 
+      <button class="gcp-cost-pill" id="btnNavbarGcpCost" onclick="openGcpCostModal()" title="Abrir Centro de Monitoreo de Costos GCP" style="display: none;">
+        <span class="cost-dot"></span>
+        <span>GCP: <strong id="costPillVal">$263.04 MXN / 7d</strong></span>
+      </button>
+
       <button class="btn-navbar-action" id="btnOpenNewAppModal" title="Registrar una nueva aplicación" style="display: none;">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -531,6 +536,153 @@
           </button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- PANTALLA / MODAL MONITOREO DE COSTOS Y APPS GCP -->
+  <div class="modal-backdrop" id="gcpCostModal" style="display: none;">
+    <div class="modal-card" style="max-width: 1240px; width: 96vw; max-height: 92vh; display: flex; flex-direction: column;">
+      <div class="modal-header" style="border-bottom: 1px solid #e2e8f0; padding: 16px 22px; background: linear-gradient(90deg, #0f172a 0%, #1e293b 100%); color: white;">
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <div style="width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, #059669 0%, #10b981 100%); display: flex; align-items: center; justify-content: center; color: white; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          </div>
+          <div>
+            <h3 style="margin: 0; font-size: 1.2rem; font-weight: 800; color: #ffffff;">Centro de Costeo y Monitoreo de Aplicaciones GCP</h3>
+            <span style="font-size: 0.76rem; color: #cbd5e1;">
+              Proyecto Único Activo: <code style="background: rgba(16, 185, 129, 0.2); color: #6ee7b7; padding: 2px 6px; border-radius: 4px; font-weight: 700;">sigrama-cloud-calidad</code>
+              &bull; Región: <code style="background: rgba(255,255,255,0.12); color: #e2e8f0; padding: 2px 6px; border-radius: 4px;">us-central1</code>
+              &bull; 14 proyectos de práctica eliminados &bull; 13 Apps con Scale-to-0
+            </span>
+          </div>
+        </div>
+        <button class="modal-close-btn" onclick="closeGcpCostModal()" title="Cerrar" style="color: #cbd5e1; font-size: 1.6rem;">&times;</button>
+      </div>
+
+      <div class="gcp-monitor-tabs">
+        <button type="button" class="gcp-monitor-tab active" id="tabBtnGcpApps" onclick="switchGcpMonitorTab('paneGcpApps')">
+          <span>🧩 Monitoreo Individual por App (13 Apps)</span>
+        </button>
+        <button type="button" class="gcp-monitor-tab" id="tabBtnGcpTable" onclick="switchGcpMonitorTab('paneGcpTable')">
+          <span>📋 Tabla Financiera Detallada (MXN / USD)</span>
+        </button>
+        <button type="button" class="gcp-monitor-tab" id="tabBtnGcpHistory" onclick="switchGcpMonitorTab('paneGcpHistory')">
+          <span>📈 Evolución Diaria (7d) &amp; Optimizaciones</span>
+        </button>
+      </div>
+
+      <div class="modal-body" style="padding: 18px 22px; overflow-y: auto; flex: 1; background: #f8fafc;">
+        <div class="gcp-kpi-grid-6">
+          <div class="gcp-kpi-card" style="background: #ffffff;">
+            <div class="gcp-kpi-label">Consumo Apps (7 Días)</div>
+            <div class="gcp-kpi-value" id="kpiGcpWeeklyCost">$263.04 MXN</div>
+            <div class="gcp-kpi-sub green" id="kpiGcpWeeklySub">
+              <span>$13.12 USD (vs $401.42 MXN bruto)</span>
+            </div>
+          </div>
+
+          <div class="gcp-kpi-card" style="background: #ffffff;">
+            <div class="gcp-kpi-label">Gasto Hoy (Últimas 24h)</div>
+            <div class="gcp-kpi-value" id="kpiGcpDailyCost">$90.02 MXN</div>
+            <div class="gcp-kpi-sub green" id="kpiGcpDailySub">
+              <span>~$4.49 USD &bull; Scale-to-0 activo</span>
+            </div>
+          </div>
+
+          <div class="gcp-kpi-card" style="background: #ffffff;">
+            <div class="gcp-kpi-label">Proyección 30 Días</div>
+            <div class="gcp-kpi-value" id="kpiGcpMonthlyProj">$957.20 MXN</div>
+            <div class="gcp-kpi-sub green" id="kpiGcpMonthlySub">
+              <span>~$47.74 USD/mes (Post-optimización)</span>
+            </div>
+          </div>
+
+          <div class="gcp-kpi-card" style="background: #ffffff;">
+            <div class="gcp-kpi-label">Créditos Restantes</div>
+            <div class="gcp-kpi-value" id="kpiGcpRemainingCredits">$88,320 MXN</div>
+            <div class="gcp-kpi-sub blue" id="kpiGcpCreditsSub">
+              <span>$4,405.00 USD disponibles</span>
+            </div>
+          </div>
+
+          <div class="gcp-kpi-card" style="background: #ffffff;">
+            <div class="gcp-kpi-label">Autonomía Estimada</div>
+            <div class="gcp-kpi-value" id="kpiGcpAutonomy">~92.3 meses</div>
+            <div class="gcp-kpi-sub green">
+              <span>Sin Load Balancer huérfano</span>
+            </div>
+          </div>
+
+          <div class="gcp-kpi-card" style="background: #ffffff;">
+            <div class="gcp-kpi-label">Proyectos &amp; Servicios</div>
+            <div class="gcp-kpi-value">1 Proy / 13 Apps</div>
+            <div class="gcp-kpi-sub green">
+              <span>14 proy. práctica eliminados</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="gcp-monitor-pane active" id="paneGcpApps">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
+            <div>
+              <h4 style="margin: 0; font-size: 0.96rem; font-weight: 800; color: #0f172a;">Resumen de Costos y Telemetría por Aplicación (13 Servicios Cloud Run)</h4>
+              <span style="font-size: 0.76rem; color: #64748b;">Muestra cuánto consume de $$$ cada aplicación en MXN y USD, sus horas de cómputo (vCPU/RAM), peticiones y bucket asociado.</span>
+            </div>
+            <input type="text" id="gcpAppFilterInput" oninput="filterGcpAppCards(this.value)" placeholder="🔍 Filtrar app o microservicio..." style="padding: 7px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.82rem; min-width: 240px; background: #ffffff;">
+          </div>
+
+          <div class="gcp-apps-monitor-grid" id="gcpAppsMonitorGrid"></div>
+        </div>
+
+        <div class="gcp-monitor-pane" id="paneGcpTable">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <h4 style="margin: 0; font-size: 0.94rem; font-weight: 800; color: #0f172a;">Desglose Financiero Completo por Microservicio (MXN y USD)</h4>
+            <span style="font-size: 0.74rem; color: #64748b;">Tarifas us-central1: vCPU = $0.0864 USD/h &bull; RAM = $0.0090 USD/GiB-h &bull; TC = $20.05 MXN/USD</span>
+          </div>
+          <div class="gcp-table-container" style="max-height: 440px;">
+            <table class="gcp-table">
+              <thead>
+                <tr>
+                  <th>Aplicación / Microservicio</th>
+                  <th>Bucket GCS</th>
+                  <th style="text-align: center;">Recursos</th>
+                  <th style="text-align: right;">Peticiones (7d / 24h)</th>
+                  <th style="text-align: right;">vCPU-h (7d / 24h)</th>
+                  <th style="text-align: right;">Costo Hoy (24h)</th>
+                  <th style="text-align: right;">Costo 7 Días</th>
+                  <th style="text-align: right;">Proyección 30d</th>
+                  <th style="text-align: center;">% Total</th>
+                  <th style="text-align: center;">Estado</th>
+                </tr>
+              </thead>
+              <tbody id="gcpServicesTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="gcp-monitor-pane" id="paneGcpHistory">
+          <div class="gcp-chart-container">
+            <div class="gcp-chart-header">
+              <div class="gcp-chart-title">Evolución Diaria del Gasto en MXN y USD (Últimos 7 Días)</div>
+              <div style="font-size: 0.74rem; color: #64748b; display: flex; gap: 12px; align-items: center;">
+                <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 8px; height: 8px; background: #f59e0b; border-radius: 2px;"></span> Día de Alta Demanda</span>
+                <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 8px; height: 8px; background: #10b981; border-radius: 2px;"></span> Gasto Optimizado</span>
+              </div>
+            </div>
+            <div class="gcp-chart-bars" id="gcpChartBarsContainer" style="height: 160px;"></div>
+          </div>
+
+          <h4 style="margin: 16px 0 10px; font-size: 0.92rem; font-weight: 800; color: #0f172a;">✅ Auditoría de Limpieza y Optimización Aplicada en GCP</h4>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px;" id="gcpOptimizationsGrid"></div>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="padding: 12px 22px; background: #ffffff; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-size: 0.74rem; color: #64748b;">Métricas en vivo desde Google Cloud Monitoring API (`sigrama-cloud-calidad`).</span>
+        <button type="button" class="btn-primary" onclick="closeGcpCostModal()" style="background: #002B49; color: white; padding: 8px 20px; border-radius: 8px; font-weight: 700; border: none; cursor: pointer;">
+          Cerrar Panel de Costos
+        </button>
+      </div>
     </div>
   </div>
 

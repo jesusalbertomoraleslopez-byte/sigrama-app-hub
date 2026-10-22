@@ -19,7 +19,8 @@
       "matriz_mce": "Admin",
       "remisiones_consultas": "Admin",
       "requisiciones": "Admin",
-      "activos": "Admin"
+      "activos": "Admin",
+      "ehs_torreon": "Admin"
     }
   },
   {
@@ -42,7 +43,8 @@
       "matriz_mce": "Usuario",
       "remisiones_consultas": "Admin",
       "requisiciones": "Admin",
-      "activos": "Usuario"
+      "activos": "Usuario",
+      "ehs_torreon": "Admin"
     }
   },
   {
@@ -65,7 +67,8 @@
       "matriz_mce": "Usuario",
       "remisiones_consultas": "Usuario",
       "requisiciones": "Admin",
-      "activos": "Usuario"
+      "activos": "Usuario",
+      "ehs_torreon": "Admin"
     }
   },
   {
@@ -88,7 +91,8 @@
       "matriz_mce": "Usuario",
       "remisiones_consultas": "Usuario",
       "requisiciones": "Admin",
-      "activos": "Usuario"
+      "activos": "Usuario",
+      "ehs_torreon": "Admin"
     }
   },
   {
@@ -111,7 +115,8 @@
       "matriz_mce": "Usuario",
       "remisiones_consultas": "Usuario",
       "requisiciones": "Admin",
-      "activos": "Usuario"
+      "activos": "Usuario",
+      "ehs_torreon": "Usuario"
     }
   },
   {
@@ -134,7 +139,8 @@
       "matriz_mce": "N/A",
       "remisiones_consultas": "Usuario",
       "requisiciones": "Usuario",
-      "activos": "Usuario"
+      "activos": "Usuario",
+      "ehs_torreon": "Usuario"
     }
   },
   {
@@ -157,7 +163,8 @@
       "matriz_mce": "N/A",
       "remisiones_consultas": "Usuario",
       "requisiciones": "Usuario",
-      "activos": "Usuario"
+      "activos": "Usuario",
+      "ehs_torreon": "Usuario"
     }
   },
   {
@@ -180,7 +187,8 @@
       "matriz_mce": "N/A",
       "remisiones_consultas": "Usuario",
       "requisiciones": "Usuario",
-      "activos": "Usuario"
+      "activos": "Usuario",
+      "ehs_torreon": "Usuario"
     }
   },
   {
@@ -203,7 +211,8 @@
       "matriz_mce": "N/A",
       "remisiones_consultas": "Usuario",
       "requisiciones": "Usuario",
-      "activos": "Usuario"
+      "activos": "Usuario",
+      "ehs_torreon": "Usuario"
     }
   },
   {
@@ -226,7 +235,8 @@
       "matriz_mce": "N/A",
       "remisiones_consultas": "Usuario",
       "requisiciones": "Usuario",
-      "activos": "Usuario"
+      "activos": "Usuario",
+      "ehs_torreon": "Usuario"
     }
   },
   {
@@ -249,7 +259,8 @@
       "matriz_mce": "N/A",
       "remisiones_consultas": "Usuario",
       "requisiciones": "Usuario",
-      "activos": "Usuario"
+      "activos": "Usuario",
+      "ehs_torreon": "Usuario"
     }
   }
 ]

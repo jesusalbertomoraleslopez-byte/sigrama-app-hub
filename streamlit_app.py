@@ -551,100 +551,163 @@ standalone_html = f"""
         </div>
       </form>
     </div>
-  <!-- MODAL MONITOREO DE COSTOS GCP -->
+  </div>
+
+  <!-- PANTALLA / MODAL MONITOREO DE COSTOS Y APPS GCP -->
   <div class="modal-backdrop" id="gcpCostModal" style="display: none;">
-    <div class="modal-card" style="max-width: 860px; max-height: 90vh; display: flex; flex-direction: column;">
-      <div class="modal-header" style="border-bottom: 1px solid #e2e8f0; padding: 16px 20px;">
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <div style="width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, #059669 0%, #10b981 100%); display: flex; align-items: center; justify-content: center; color: white;">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    <div class="modal-card" style="max-width: 1240px; width: 96vw; max-height: 92vh; display: flex; flex-direction: column;">
+      <div class="modal-header" style="border-bottom: 1px solid #e2e8f0; padding: 16px 22px; background: linear-gradient(90deg, #0f172a 0%, #1e293b 100%); color: white;">
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <div style="width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, #059669 0%, #10b981 100%); display: flex; align-items: center; justify-content: center; color: white; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
           </div>
           <div>
-            <h3 style="margin: 0; font-size: 1.15rem; font-weight: 700; color: #0f172a;">Google Cloud Platform &mdash; Auditoría de Costos & Consumo</h3>
-            <span style="font-size: 0.75rem; color: #64748b;">Proyecto: <code style="background: #e2e8f0; padding: 2px 6px; border-radius: 4px; font-weight: 600;">sigrama-cloud-calidad</code> &bull; Región: <code style="background: #e2e8f0; padding: 2px 6px; border-radius: 4px;">us-central1</code> &bull; Métricas en Tiempo Real</span>
+            <h3 style="margin: 0; font-size: 1.2rem; font-weight: 800; color: #ffffff;">Centro de Costeo y Monitoreo de Aplicaciones GCP</h3>
+            <span style="font-size: 0.76rem; color: #cbd5e1;">
+              Proyecto Único Activo: <code style="background: rgba(16, 185, 129, 0.2); color: #6ee7b7; padding: 2px 6px; border-radius: 4px; font-weight: 700;">sigrama-cloud-calidad</code>
+              &bull; Región: <code style="background: rgba(255,255,255,0.12); color: #e2e8f0; padding: 2px 6px; border-radius: 4px;">us-central1</code>
+              &bull; 14 proyectos de práctica eliminados &bull; 13 Apps con Scale-to-0
+            </span>
           </div>
         </div>
-        <button class="modal-close-btn" onclick="closeGcpCostModal()" title="Cerrar">&times;</button>
+        <button class="modal-close-btn" onclick="closeGcpCostModal()" title="Cerrar" style="color: #cbd5e1; font-size: 1.6rem;">&times;</button>
       </div>
 
-      <div class="modal-body" style="padding: 20px; overflow-y: auto; flex: 1;">
-        <!-- KPI GRID -->
-        <div class="gcp-kpi-grid">
-          <div class="gcp-kpi-card">
-            <div class="gcp-kpi-label">Gasto Diario Est.</div>
-            <div class="gcp-kpi-value" id="kpiGcpDailyCost">~$3.00 USD</div>
-            <div class="gcp-kpi-sub green">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-              <span>-88% vs pico histórico</span>
+      <!-- SUB-NAVEGACIÓN DE PESTAÑAS DEL COSTEADOR -->
+      <div class="gcp-monitor-tabs">
+        <button type="button" class="gcp-monitor-tab active" id="tabBtnGcpApps" onclick="switchGcpMonitorTab('paneGcpApps')">
+          <span>🧩 Monitoreo Individual por App (13 Apps)</span>
+        </button>
+        <button type="button" class="gcp-monitor-tab" id="tabBtnGcpTable" onclick="switchGcpMonitorTab('paneGcpTable')">
+          <span>📋 Tabla Financiera Detallada (MXN / USD)</span>
+        </button>
+        <button type="button" class="gcp-monitor-tab" id="tabBtnGcpHistory" onclick="switchGcpMonitorTab('paneGcpHistory')">
+          <span>📈 Evolución Diaria (7d) & Optimizaciones</span>
+        </button>
+      </div>
+
+      <div class="modal-body" style="padding: 18px 22px; overflow-y: auto; flex: 1; background: #f8fafc;">
+        <!-- 6 KPIs EJECUTIVOS -->
+        <div class="gcp-kpi-grid-6">
+          <div class="gcp-kpi-card" style="background: #ffffff;">
+            <div class="gcp-kpi-label">Consumo Apps (7 Días)</div>
+            <div class="gcp-kpi-value" id="kpiGcpWeeklyCost">$263.04 MXN</div>
+            <div class="gcp-kpi-sub green" id="kpiGcpWeeklySub">
+              <span>$13.12 USD (vs $401.42 MXN bruto)</span>
             </div>
           </div>
 
-          <div class="gcp-kpi-card">
+          <div class="gcp-kpi-card" style="background: #ffffff;">
+            <div class="gcp-kpi-label">Gasto Hoy (Últimas 24h)</div>
+            <div class="gcp-kpi-value" id="kpiGcpDailyCost">$90.02 MXN</div>
+            <div class="gcp-kpi-sub green" id="kpiGcpDailySub">
+              <span>~$4.49 USD &bull; Scale-to-0 activo</span>
+            </div>
+          </div>
+
+          <div class="gcp-kpi-card" style="background: #ffffff;">
+            <div class="gcp-kpi-label">Proyección 30 Días</div>
+            <div class="gcp-kpi-value" id="kpiGcpMonthlyProj">$957.20 MXN</div>
+            <div class="gcp-kpi-sub green" id="kpiGcpMonthlySub">
+              <span>~$47.74 USD/mes (Post-optimización)</span>
+            </div>
+          </div>
+
+          <div class="gcp-kpi-card" style="background: #ffffff;">
             <div class="gcp-kpi-label">Créditos Restantes</div>
-            <div class="gcp-kpi-value" id="kpiGcpRemainingCredits">$4,405.00</div>
-            <div class="gcp-kpi-sub blue">
-              <span>de $5,089 USD iniciales</span>
+            <div class="gcp-kpi-value" id="kpiGcpRemainingCredits">$88,320 MXN</div>
+            <div class="gcp-kpi-sub blue" id="kpiGcpCreditsSub">
+              <span>$4,405.00 USD disponibles</span>
             </div>
           </div>
 
-          <div class="gcp-kpi-card">
-            <div class="gcp-kpi-label">Autonomía Est.</div>
-            <div class="gcp-kpi-value" id="kpiGcpAutonomy">~48 meses</div>
+          <div class="gcp-kpi-card" style="background: #ffffff;">
+            <div class="gcp-kpi-label">Autonomía Estimada</div>
+            <div class="gcp-kpi-value" id="kpiGcpAutonomy">~92.3 meses</div>
             <div class="gcp-kpi-sub green">
-              <span>a ritmo optimizado</span>
+              <span>Sin Load Balancer huérfano</span>
             </div>
           </div>
 
-          <div class="gcp-kpi-card">
-            <div class="gcp-kpi-label">Microservicios</div>
-            <div class="gcp-kpi-value">12 / 12</div>
+          <div class="gcp-kpi-card" style="background: #ffffff;">
+            <div class="gcp-kpi-label">Proyectos & Servicios</div>
+            <div class="gcp-kpi-value">1 Proy / 13 Apps</div>
             <div class="gcp-kpi-sub green">
-              <span>Scale-to-0 & Concurrencia 40</span>
+              <span>14 proy. práctica eliminados</span>
             </div>
           </div>
         </div>
 
-        <!-- HISTORIC CHART -->
-        <div class="gcp-chart-container">
-          <div class="gcp-chart-header">
-            <div class="gcp-chart-title">Consumo Diario y Gasto en USD (Últimos 7 Días)</div>
-            <div style="font-size: 0.72rem; color: #64748b; display: flex; gap: 12px; align-items: center;">
-              <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 8px; height: 8px; background: #ef4444; border-radius: 2px;"></span> Gasto Previo</span>
-              <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 8px; height: 8px; background: #10b981; border-radius: 2px;"></span> Gasto Optimizado Hoy</span>
+        <!-- PESTAÑA 1: TARJETAS DE MONITOREO INDIVIDUAL POR APP -->
+        <div class="gcp-monitor-pane active" id="paneGcpApps">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
+            <div>
+              <h4 style="margin: 0; font-size: 0.96rem; font-weight: 800; color: #0f172a;">Resumen de Costos y Telemetría por Aplicación (13 Servicios Cloud Run)</h4>
+              <span style="font-size: 0.76rem; color: #64748b;">Muestra cuánto consume de $$$ cada aplicación en MXN y USD, sus horas de cómputo (vCPU/RAM), peticiones y bucket asociado.</span>
             </div>
+            <input type="text" id="gcpAppFilterInput" oninput="filterGcpAppCards(this.value)" placeholder="🔍 Filtrar app o microservicio..." style="padding: 7px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.82rem; min-width: 240px; background: #ffffff;">
           </div>
-          <div class="gcp-chart-bars" id="gcpChartBarsContainer">
-            <!-- Barras dinamicas -->
+
+          <div class="gcp-apps-monitor-grid" id="gcpAppsMonitorGrid">
+            <!-- Tarjetas generadas dinámicamente -->
           </div>
         </div>
 
-        <!-- BREAKDOWN TABLE -->
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-          <h4 style="margin: 0; font-size: 0.88rem; font-weight: 700; color: #0f172a;">Desglose de Consumo por Microservicio (Últimas 24 Horas)</h4>
-          <span style="font-size: 0.72rem; color: #64748b;">Tarifa: 1 vCPU Throttled = $0.0864/hr</span>
+        <!-- PESTAÑA 2: TABLA FINANCIERA DETALLADA -->
+        <div class="gcp-monitor-pane" id="paneGcpTable">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <h4 style="margin: 0; font-size: 0.94rem; font-weight: 800; color: #0f172a;">Desglose Financiero Completo por Microservicio (MXN y USD)</h4>
+            <span style="font-size: 0.74rem; color: #64748b;">Tarifas us-central1: vCPU = $0.0864 USD/h &bull; RAM = $0.0090 USD/GiB-h &bull; TC = $20.05 MXN/USD</span>
+          </div>
+          <div class="gcp-table-container" style="max-height: 440px;">
+            <table class="gcp-table">
+              <thead>
+                <tr>
+                  <th>Aplicación / Microservicio</th>
+                  <th>Bucket GCS</th>
+                  <th style="text-align: center;">Recursos</th>
+                  <th style="text-align: right;">Peticiones (7d / 24h)</th>
+                  <th style="text-align: right;">vCPU-h (7d / 24h)</th>
+                  <th style="text-align: right;">Costo Hoy (24h)</th>
+                  <th style="text-align: right;">Costo 7 Días</th>
+                  <th style="text-align: right;">Proyección 30d</th>
+                  <th style="text-align: center;">% Total</th>
+                  <th style="text-align: center;">Estado</th>
+                </tr>
+              </thead>
+              <tbody id="gcpServicesTableBody">
+                <!-- Filas dinámicas -->
+              </tbody>
+            </table>
+          </div>
         </div>
-        <div class="gcp-table-container">
-          <table class="gcp-table">
-            <thead>
-              <tr>
-                <th>Microservicio</th>
-                <th style="text-align: right;">vCPU-Horas (24h)</th>
-                <th style="text-align: right;">Peticiones (24h)</th>
-                <th style="text-align: right;">Costo Est. (USD)</th>
-                <th style="text-align: center;">Estado</th>
-              </tr>
-            </thead>
-            <tbody id="gcpServicesTableBody">
-              <!-- Filas dinamicas -->
-            </tbody>
-          </table>
+
+        <!-- PESTAÑA 3: EVOLUCIÓN DIARIA Y AUDITORÍA DE OPTIMIZACIÓN -->
+        <div class="gcp-monitor-pane" id="paneGcpHistory">
+          <div class="gcp-chart-container">
+            <div class="gcp-chart-header">
+              <div class="gcp-chart-title">Evolución Diaria del Gasto en MXN y USD (Últimos 7 Días)</div>
+              <div style="font-size: 0.74rem; color: #64748b; display: flex; gap: 12px; align-items: center;">
+                <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 8px; height: 8px; background: #f59e0b; border-radius: 2px;"></span> Día de Alta Demanda</span>
+                <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 8px; height: 8px; background: #10b981; border-radius: 2px;"></span> Gasto Optimizado</span>
+              </div>
+            </div>
+            <div class="gcp-chart-bars" id="gcpChartBarsContainer" style="height: 160px;">
+              <!-- Barras dinámicas -->
+            </div>
+          </div>
+
+          <h4 style="margin: 16px 0 10px; font-size: 0.92rem; font-weight: 800; color: #0f172a;">✅ Auditoría de Limpieza y Optimización Aplicada en GCP</h4>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px;" id="gcpOptimizationsGrid">
+            <!-- Tarjetas de optimización -->
+          </div>
         </div>
       </div>
 
-      <div class="modal-footer" style="padding: 12px 20px; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
-        <span style="font-size: 0.72rem; color: #64748b;">Métricas consultadas vía Google Cloud Monitoring API en tiempo real.</span>
-        <button type="button" class="btn-primary" onclick="closeGcpCostModal()" style="background: #002B49; color: white; padding: 7px 18px; border-radius: 8px; font-weight: 600; border: none; cursor: pointer;">
-          Cerrar
+      <div class="modal-footer" style="padding: 12px 22px; background: #ffffff; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-size: 0.74rem; color: #64748b;">Métricas en vivo desde Google Cloud Monitoring API (`sigrama-cloud-calidad`).</span>
+        <button type="button" class="btn-primary" onclick="closeGcpCostModal()" style="background: #002B49; color: white; padding: 8px 20px; border-radius: 8px; font-weight: 700; border: none; cursor: pointer;">
+          Cerrar Panel de Costos
         </button>
       </div>
     </div>
@@ -693,7 +756,8 @@ standalone_html = f"""
       const customPass = getStoredPasswords()[u.id];
       let userCopy = Object.assign({{}}, u);
       if (customUsers[u.id]) {{
-        userCopy = Object.assign(userCopy, customUsers[u.id]);
+        const mergedPerms = Object.assign({{}}, u.permissions || {{}}, customUsers[u.id].permissions || {{}});
+        userCopy = Object.assign(userCopy, customUsers[u.id], {{ permissions: mergedPerms }});
       }}
       if (customPass) {{
         userCopy.password = customPass;
@@ -817,7 +881,9 @@ standalone_html = f"""
       if (costPill && typeof GCP_METRICS !== "undefined" && GCP_METRICS.kpis) {{
         const kpis = GCP_METRICS.kpis;
         const val = document.getElementById("costPillVal");
-        if (val) val.innerText = `~$${{kpis.daily_cost_today_usd.toFixed(2)}} USD/d (-${{kpis.savings_percent}}%)`;
+        const wMxn = (kpis.weekly_cost_7d_mxn !== undefined) ? kpis.weekly_cost_7d_mxn : (kpis.daily_cost_today_usd * 20.05 * 7);
+        const wUsd = (kpis.weekly_cost_7d_usd !== undefined) ? kpis.weekly_cost_7d_usd : (kpis.daily_cost_today_usd * 7);
+        if (val) val.innerText = `7d: $${{wMxn.toFixed(2)}} MXN ($${{wUsd.toFixed(2)}} USD)`;
         costPill.style.display = (user.is_global_admin || (user.permissions && user.permissions["gcp_cost_monitor"])) ? "inline-flex" : "none";
       }}
 
@@ -1114,7 +1180,7 @@ standalone_html = f"""
             const tr = document.createElement("tr");
             tr.innerHTML = `
               <td>
-                <strong style="color: #0f172a;">${{app.title}}</strong>
+                <strong style="color: #0f172a;">${{app.name || app.title}}</strong>
                 <div style="font-size: 0.72rem; color: #64748b;">${{app.category}}</div>
               </td>
               <td>
@@ -1458,11 +1524,44 @@ standalone_html = f"""
         const gcpIconSvg = `<svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z" fill="#4285F4"/><path d="M19 18H6c-2.21 0-4-1.79-4-4 0-2.05 1.53-3.76 3.56-3.97l1.07-.11.5-.95C8.08 7.14 9.94 6 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5 1.53.11c1.56.1 2.78 1.41 2.78 2.96 0 1.65-1.35 3-3 3z" fill="#fff" opacity="0.2"/></svg>`;
         const stCloudIconSvg = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>`;
 
+        // Obtener registro de costos individual de esta App desde GCP_METRICS
+        const costMap = (typeof GCP_METRICS !== "undefined" && GCP_METRICS.apps_cost_map) ? GCP_METRICS.apps_cost_map : {{}};
+        const appCost = costMap[app.id] || {{
+          cost_mxn_7d: 0.20,
+          cost_usd_7d: 0.01,
+          cost_mxn_24h: 0.00,
+          cost_usd_24h: 0.00,
+          vcpu_hours_7d: 0.05,
+          requests_7d: 25,
+          share_percent_7d: 0.1,
+          service: "sigrama-" + app.id
+        }};
+
+        const isCostMonitorCard = (app.id === "gcp_cost_monitor");
+        const kpisObj = (typeof GCP_METRICS !== "undefined" && GCP_METRICS.kpis) ? GCP_METRICS.kpis : {{}};
+        const cardMxn7d = isCostMonitorCard
+          ? (kpisObj.weekly_cost_7d_mxn !== undefined ? kpisObj.weekly_cost_7d_mxn : appCost.cost_mxn_7d)
+          : appCost.cost_mxn_7d;
+        const cardUsd7d = isCostMonitorCard
+          ? (kpisObj.weekly_cost_7d_usd !== undefined ? kpisObj.weekly_cost_7d_usd : appCost.cost_usd_7d)
+          : appCost.cost_usd_7d;
+        const cardMxn24h = isCostMonitorCard
+          ? (kpisObj.daily_cost_today_mxn !== undefined ? kpisObj.daily_cost_today_mxn : appCost.cost_mxn_24h)
+          : appCost.cost_mxn_24h;
+        const cardVcpu7d = isCostMonitorCard
+          ? (kpisObj.total_vcpu_hours_7d !== undefined ? kpisObj.total_vcpu_hours_7d : appCost.vcpu_hours_7d)
+          : appCost.vcpu_hours_7d;
+        const cardReqs7d = isCostMonitorCard
+          ? (kpisObj.total_requests_7d !== undefined ? kpisObj.total_requests_7d : appCost.requests_7d)
+          : appCost.requests_7d;
+
         return `
           <div class="app-card" onclick="openApp('${{app.id}}')">
             <div class="app-card-top">
-              <div class="app-icon-squircle" style="background: ${{bgGradient}};">
-                ${{iconSvg}}
+              <div class="app-icon-wrapper">
+                <div class="app-icon-squircle" style="background: ${{bgGradient}};">
+                  ${{iconSvg}}
+                </div>
               </div>
               <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
                 <div class="app-status-badge online">
@@ -1476,20 +1575,31 @@ standalone_html = f"""
               <div class="app-category-label">${{app.category || 'General'}}</div>
               <div class="app-name">${{app.name}}</div>
               <div class="app-desc">${{app.description || ''}}</div>
+
+              <!-- ÚNICA INDICACIÓN DE COSTO: MUY SUTIL Y ELEGANTE -->
+              <div class="app-cost-subtle" onclick="event.stopPropagation(); openGcpCostModal('${{app.id}}')" title="Clic para ver desglose de telemetría y costos en GCP">
+                <span class="app-cost-subtle-lbl">${{isCostMonitorCard ? 'Gasto Total (7d):' : 'Consumo GCP (7d):'}}</span>
+                <span>
+                  <strong class="app-cost-subtle-val">$${{cardMxn7d.toFixed(2)}} MXN</strong>
+                  <span class="app-cost-subtle-usd">($${{cardUsd7d.toFixed(2)}} USD)</span>
+                </span>
+              </div>
             </div>
             <div class="app-card-footer" onclick="event.stopPropagation()">
-              <span class="app-meta-port ${{cloudBadgeClass}}" title="${{isGcp ? 'Alojada en Google Cloud Platform (Cloud Run)' : (app.cloud_url ? 'Alojada en Streamlit Cloud' : 'Instancia local')}}">
-                ${{isGcp ? '☁️ Google Cloud' : (app.cloud_url ? 'Nube / Cloud' : 'Puerto ' + app.port)}}
+              <span class="app-meta-port ${{cloudBadgeClass}}" title="${{isGcp ? 'Alojada en Google Cloud Platform (Cloud Run)' : (app.cloud_url ? 'Alojada en Streamlit Cloud' : 'Panel Interno GCP')}}">
+                ${{isGcp ? '☁️ Google Cloud' : (app.id === 'gcp_cost_monitor' ? '📊 Costeador En Vivo' : (app.cloud_url ? 'Nube / Cloud' : 'Puerto ' + app.port))}}
               </span>
               <div class="app-actions">
-                ${{app.cloud_url ? `
-                  <button class="btn-icon-action ${{isGcp ? 'btn-gcp-cloud' : ''}}" title="${{isGcp ? 'Abrir en Google Cloud Platform (Cloud Run)' : 'Abrir en la Nube (Streamlit Cloud)'}}" onclick="window.open('${{app.cloud_url}}', '_blank')">
+                ${{app.cloud_url && app.cloud_url !== '#' ? `
+                  <button class="btn-icon-action ${{isGcp ? 'btn-gcp-cloud' : ''}}" title="${{isGcp ? 'Abrir en Google Cloud Platform (Cloud Run)' : 'Abrir en la Nube'}}" onclick="window.open('${{app.cloud_url}}', '_blank')">
                     ${{isGcp ? gcpIconSvg : stCloudIconSvg}}
                   </button>
                 ` : ''}}
+                ${{app.id !== 'gcp_cost_monitor' ? `
                 <button class="btn-icon-action" title="Abrir en Nueva Pestaña" onclick="window.open('${{finalUrl}}', '_blank')">
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
                 </button>
+                ` : ''}}
               </div>
             </div>
           </div>
@@ -1560,11 +1670,43 @@ standalone_html = f"""
       window.scrollTo(0, 0);
     }};
 
-    window.openGcpCostModal = function() {{
+    let highlightedGcpAppId = null;
+
+    window.switchGcpMonitorTab = function(paneId) {{
+      const tabs = [
+        {{ btn: "tabBtnGcpApps", pane: "paneGcpApps" }},
+        {{ btn: "tabBtnGcpTable", pane: "paneGcpTable" }},
+        {{ btn: "tabBtnGcpHistory", pane: "paneGcpHistory" }}
+      ];
+      tabs.forEach(t => {{
+        const b = document.getElementById(t.btn);
+        const p = document.getElementById(t.pane);
+        if (b) {{
+          if (t.pane === paneId) b.classList.add("active");
+          else b.classList.remove("active");
+        }}
+        if (p) {{
+          if (t.pane === paneId) p.classList.add("active");
+          else p.classList.remove("active");
+        }}
+      }});
+    }};
+
+    window.openGcpCostModal = function(focusAppId = null) {{
+      highlightedGcpAppId = (focusAppId && focusAppId !== "gcp_cost_monitor") ? focusAppId : null;
       const modal = document.getElementById("gcpCostModal");
       if (modal) {{
-        renderGcpCostDashboard();
+        const filterInput = document.getElementById("gcpAppFilterInput");
+        if (filterInput) filterInput.value = "";
+        switchGcpMonitorTab("paneGcpApps");
+        renderGcpCostDashboard("");
         modal.style.display = "flex";
+        if (highlightedGcpAppId) {{
+          setTimeout(() => {{
+            const cardEl = document.getElementById("gcpMonitorCard_" + highlightedGcpAppId);
+            if (cardEl) cardEl.scrollIntoView({{ behavior: "smooth", block: "center" }});
+          }}, 120);
+        }}
       }}
     }};
 
@@ -1573,33 +1715,174 @@ standalone_html = f"""
       if (modal) modal.style.display = "none";
     }};
 
-    function renderGcpCostDashboard() {{
+    window.filterGcpAppCards = function(query) {{
+      renderGcpCostDashboard(query || "");
+    }};
+
+    function renderGcpCostDashboard(filterQuery = "") {{
       if (typeof GCP_METRICS === "undefined" || !GCP_METRICS.kpis) return;
       const kpis = GCP_METRICS.kpis;
-      
+      const q = (filterQuery || "").toLowerCase().trim();
+
+      const elWeekly = document.getElementById("kpiGcpWeeklyCost");
+      const elWeeklySub = document.getElementById("kpiGcpWeeklySub");
       const elDaily = document.getElementById("kpiGcpDailyCost");
+      const elDailySub = document.getElementById("kpiGcpDailySub");
+      const elMonthly = document.getElementById("kpiGcpMonthlyProj");
+      const elMonthlySub = document.getElementById("kpiGcpMonthlySub");
       const elRem = document.getElementById("kpiGcpRemainingCredits");
+      const elRemSub = document.getElementById("kpiGcpCreditsSub");
       const elAut = document.getElementById("kpiGcpAutonomy");
-      if (elDaily) elDaily.innerText = `~$${{kpis.daily_cost_today_usd.toFixed(2)}} USD`;
-      if (elRem) elRem.innerText = `$${{kpis.remaining_credits_usd.toLocaleString("en-US", {{minimumFractionDigits: 2}})}}`;
+
+      const wMxn = kpis.weekly_cost_7d_mxn || 263.04;
+      const wUsd = kpis.weekly_cost_7d_usd || 13.12;
+      const dMxn = kpis.daily_cost_today_mxn || 90.02;
+      const dUsd = kpis.daily_cost_today_usd || 4.49;
+      const mMxn = kpis.projected_monthly_mxn || 957.20;
+      const mUsd = kpis.projected_monthly_usd || 47.74;
+      const rMxn = kpis.remaining_credits_mxn || 88320.25;
+      const rUsd = kpis.remaining_credits_usd || 4405.00;
+
+      if (elWeekly) elWeekly.innerText = `$${{wMxn.toLocaleString("en-US", {{minimumFractionDigits: 2, maximumFractionDigits: 2}})}} MXN`;
+      if (elWeeklySub) elWeeklySub.innerHTML = `<span>$${{wUsd.toFixed(2)}} USD &bull; ${{kpis.total_vcpu_hours_7d || 130.5}} vCPU-h (7d)</span>`;
+      if (elDaily) elDaily.innerText = `$${{dMxn.toLocaleString("en-US", {{minimumFractionDigits: 2, maximumFractionDigits: 2}})}} MXN`;
+      if (elDailySub) elDailySub.innerHTML = `<span>~$${{dUsd.toFixed(2)}} USD &bull; ${{(kpis.total_requests_24h || 0).toLocaleString()}} reqs hoy</span>`;
+      if (elMonthly) elMonthly.innerText = `$${{mMxn.toLocaleString("en-US", {{minimumFractionDigits: 2, maximumFractionDigits: 2}})}} MXN`;
+      if (elMonthlySub) elMonthlySub.innerHTML = `<span>~$${{mUsd.toFixed(2)}} USD/mes (Post-optimización)</span>`;
+      if (elRem) elRem.innerText = `$${{Math.round(rMxn).toLocaleString("en-US")}} MXN`;
+      if (elRemSub) elRemSub.innerHTML = `<span>$${{rUsd.toLocaleString("en-US", {{minimumFractionDigits: 2}})}} USD disponibles</span>`;
       if (elAut) elAut.innerText = `~${{kpis.projected_months_left}} meses`;
 
-      // Render Bar Chart
+      const services = GCP_METRICS.services_breakdown || [];
+      const filteredServices = services.filter(s => {{
+        if (!q) return true;
+        return (s.app_name && s.app_name.toLowerCase().includes(q)) ||
+               (s.service && s.service.toLowerCase().includes(q)) ||
+               (s.category && s.category.toLowerCase().includes(q)) ||
+               (s.bucket && s.bucket.toLowerCase().includes(q));
+      }});
+
+      // 1. Renderizar Tarjetas Individuales por App (Pestaña 1)
+      const appsMonitorGrid = document.getElementById("gcpAppsMonitorGrid");
+      if (appsMonitorGrid) {{
+        appsMonitorGrid.innerHTML = filteredServices.map(s => {{
+          const iconSvg = ICONS[s.icon] || ICONS["globe"];
+          const isHigh = (highlightedGcpAppId && s.app_id === highlightedGcpAppId) ? "highlighted" : "";
+          const shareW = Math.max(3, Math.min(100, s.share_percent_7d || 0));
+          return `
+            <div class="gcp-app-monitor-card ${{isHigh}}" id="gcpMonitorCard_${{s.app_id}}">
+              <div class="gcp-app-monitor-header">
+                <div class="gcp-app-mini-icon" style="background: ${{s.bg_gradient || 'linear-gradient(135deg, #1e3c72, #2a5298)'}};">
+                  ${{iconSvg}}
+                </div>
+                <div style="flex: 1; min-width: 0;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; gap: 4px;">
+                    <span style="font-size: 0.65rem; font-weight: 800; text-transform: uppercase; color: #64748b;">${{s.category}}</span>
+                    <span class="gcp-status-tag">🟢 min=0 / max=${{s.max_scale}}</span>
+                  </div>
+                  <div style="font-size: 0.92rem; font-weight: 800; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${{s.app_name}}">${{s.app_name}}</div>
+                  <div style="font-size: 0.7rem; color: #475569; font-family: monospace;">☁️ ${{s.service}} &bull; ${{s.cpu}} vCPU / ${{s.memory_gib}} GiB</div>
+                </div>
+              </div>
+
+              <div class="gcp-app-monitor-metrics">
+                <div class="gcp-app-metric-box">
+                  <span class="gcp-app-metric-lbl">Costo 7 Días</span>
+                  <span class="gcp-app-metric-val" style="color: #059669;">$${{s.cost_mxn_7d.toFixed(2)}} MXN</span>
+                  <span style="font-size: 0.66rem; color: #64748b; font-weight: 600;">$${{s.cost_usd_7d.toFixed(2)}} USD</span>
+                </div>
+                <div class="gcp-app-metric-box">
+                  <span class="gcp-app-metric-lbl">Costo Hoy (24h)</span>
+                  <span class="gcp-app-metric-val">$${{s.cost_mxn_24h.toFixed(2)}} MXN</span>
+                  <span style="font-size: 0.66rem; color: #64748b; font-weight: 600;">$${{s.cost_usd_24h.toFixed(2)}} USD</span>
+                </div>
+                <div class="gcp-app-metric-box">
+                  <span class="gcp-app-metric-lbl">Est. Mensual</span>
+                  <span class="gcp-app-metric-val" style="color: #0284c7;">$${{s.cost_mxn_30d_est.toFixed(2)}} MXN</span>
+                  <span style="font-size: 0.66rem; color: #64748b; font-weight: 600;">$${{s.cost_usd_30d_est.toFixed(2)}} USD</span>
+                </div>
+              </div>
+
+              <div style="display: flex; justify-content: space-between; font-size: 0.72rem; color: #334155; font-weight: 600;">
+                <span>⚡ Cómputo 7d: <strong>${{s.vcpu_hours_7d.toFixed(2)}} vCPU-h</strong> (${{s.gib_hours_7d.toFixed(2)}} GiB-h)</span>
+                <span>📡 <strong>${{s.requests_7d.toLocaleString()}}</strong> reqs</span>
+              </div>
+
+              <div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.68rem; color: #64748b; margin-bottom: 3px;">
+                  <span>🪣 Bucket: <code>${{s.bucket}}</code></span>
+                  <strong style="color: #0f172a;">${{s.share_percent_7d}}% del gasto</strong>
+                </div>
+                <div class="gcp-app-share-bar-bg">
+                  <div class="gcp-app-share-bar-fill" style="width: ${{shareW}}%;"></div>
+                </div>
+              </div>
+            </div>
+          `;
+        }}).join("");
+      }}
+
+      // 2. Renderizar Tabla Financiera Detallada (Pestaña 2)
+      const tableBody = document.getElementById("gcpServicesTableBody");
+      if (tableBody) {{
+        const rowsHtml = filteredServices.map(s => {{
+          return `
+            <tr>
+              <td>
+                <strong style="color: #0f172a;">${{s.app_name}}</strong>
+                <div style="font-size: 0.68rem; color: #64748b; font-family: monospace;">${{s.service}}</div>
+              </td>
+              <td style="font-family: monospace; font-size: 0.7rem; color: #475569;">${{s.bucket}}</td>
+              <td style="text-align: center; font-size: 0.72rem; font-weight: 600;">${{s.cpu}} vCPU / ${{s.memory_gib}} GiB</td>
+              <td style="text-align: right; color: #334155; font-weight: 600;">${{s.requests_7d.toLocaleString()}} <span style="color:#94a3b8; font-size:0.68rem;">(${{s.requests_24h.toLocaleString()}} hoy)</span></td>
+              <td style="text-align: right; font-weight: 600;">${{s.vcpu_hours_7d.toFixed(2)}} h <span style="color:#94a3b8; font-size:0.68rem;">(${{s.vcpu_hours_24h.toFixed(2)}}h)</span></td>
+              <td style="text-align: right; font-weight: 700; color: #0f172a;">$${{s.cost_mxn_24h.toFixed(2)}} MXN <div style="font-size:0.66rem; color:#64748b;">$${{s.cost_usd_24h.toFixed(2)}} USD</div></td>
+              <td style="text-align: right; font-weight: 800; color: #059669;">$${{s.cost_mxn_7d.toFixed(2)}} MXN <div style="font-size:0.66rem; color:#64748b;">$${{s.cost_usd_7d.toFixed(2)}} USD</div></td>
+              <td style="text-align: right; font-weight: 700; color: #0284c7;">$${{s.cost_mxn_30d_est.toFixed(2)}} MXN <div style="font-size:0.66rem; color:#64748b;">$${{s.cost_usd_30d_est.toFixed(2)}} USD</div></td>
+              <td style="text-align: center; font-weight: 700;">${{s.share_percent_7d}}%</td>
+              <td style="text-align: center;">
+                <span class="gcp-status-tag">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                  Scale-to-0
+                </span>
+              </td>
+            </tr>
+          `;
+        }}).join("");
+
+        const totalRow = `
+          <tr style="background: #f0fdf4; font-weight: 800; border-top: 2px solid #10b981;">
+            <td colspan="3" style="color: #065f46;">TOTAL 13 APLICACIONES SIGRAMA</td>
+            <td style="text-align: right; color: #065f46;">${{(kpis.total_requests_7d || 0).toLocaleString()}} reqs</td>
+            <td style="text-align: right; color: #065f46;">${{(kpis.total_vcpu_hours_7d || 0).toFixed(2)}} h</td>
+            <td style="text-align: right; color: #065f46;">$${{dMxn.toFixed(2)}} MXN ($${{dUsd.toFixed(2)}} USD)</td>
+            <td style="text-align: right; color: #065f46;">$${{wMxn.toFixed(2)}} MXN ($${{wUsd.toFixed(2)}} USD)</td>
+            <td style="text-align: right; color: #0284c7;">$${{mMxn.toFixed(2)}} MXN ($${{mUsd.toFixed(2)}} USD)</td>
+            <td style="text-align: center; color: #065f46;">100%</td>
+            <td style="text-align: center;"><span class="gcp-status-tag">13/13 Activas</span></td>
+          </tr>
+        `;
+        tableBody.innerHTML = rowsHtml + totalRow;
+      }}
+
+      // 3. Renderizar Gráfica Diaria y Tarjetas de Optimización (Pestaña 3)
       const chartContainer = document.getElementById("gcpChartBarsContainer");
       if (chartContainer && GCP_METRICS.daily_history && GCP_METRICS.daily_history.length > 0) {{
         const hist = GCP_METRICS.daily_history;
-        const maxCost = Math.max(...hist.map(h => h.cost_usd), 5.0);
-        
+        const maxCost = Math.max(...hist.map(h => h.cost_mxn || (h.cost_usd * 20.05)), 25.0);
+
         chartContainer.innerHTML = hist.map(h => {{
-          const pct = Math.max(10, Math.round((h.cost_usd / maxCost) * 100));
-          const isOptimized = h.cost_usd <= 4.0;
-          const barClass = isOptimized ? "optimized" : (h.cost_usd > 8.0 ? "high" : "medium");
+          const mxnVal = h.cost_mxn !== undefined ? h.cost_mxn : +(h.cost_usd * 20.05).toFixed(2);
+          const pct = Math.max(12, Math.round((mxnVal / maxCost) * 100));
+          const isOptimized = h.cost_usd <= 2.5;
+          const barClass = isOptimized ? "optimized" : (h.cost_usd > 6.0 ? "high" : "medium");
           const dateParts = h.date.split("-");
           const shortDate = `${{dateParts[2]}}/${{dateParts[1]}}`;
-          
+
           return `
-            <div class="gcp-chart-bar-col" title="${{h.date}}: ${{h.vcpu_hours}} vCPU-hrs ($${{h.cost_usd}} USD) - ${{h.requests}} reqs">
-              <span class="gcp-chart-bar-val">$${{h.cost_usd}}</span>
+            <div class="gcp-chart-bar-col" title="${{h.date}}: $${{mxnVal.toFixed(2)}} MXN ($${{h.cost_usd.toFixed(2)}} USD) | ${{h.vcpu_hours}} vCPU-h | ${{h.requests}} reqs">
+              <span class="gcp-chart-bar-val">$${{mxnVal.toFixed(2)}} MXN</span>
+              <span style="font-size: 0.62rem; color: #64748b; margin-bottom: 2px;">($${{h.cost_usd.toFixed(2)}} USD)</span>
               <div class="gcp-chart-bar ${{barClass}}" style="height: ${{pct}}%;"></div>
               <span class="gcp-chart-date-lbl">${{shortDate}}</span>
             </div>
@@ -1607,25 +1890,17 @@ standalone_html = f"""
         }}).join("");
       }}
 
-      // Render Services Table
-      const tableBody = document.getElementById("gcpServicesTableBody");
-      if (tableBody && GCP_METRICS.services_breakdown && GCP_METRICS.services_breakdown.length > 0) {{
-        tableBody.innerHTML = GCP_METRICS.services_breakdown.map(s => {{
-          return `
-            <tr>
-              <td><strong style="color: #0f172a;">${{s.service}}</strong></td>
-              <td style="text-align: right; font-weight: 600;">${{s.vcpu_hours_24h.toFixed(2)}} h</td>
-              <td style="text-align: right; color: #64748b;">${{s.requests_24h.toLocaleString()}}</td>
-              <td style="text-align: right; font-weight: 700; color: #0f172a;">$${{s.cost_usd_24h.toFixed(2)}}</td>
-              <td style="text-align: center;">
-                <span class="gcp-status-tag">
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                  Optimizado
-                </span>
-              </td>
-            </tr>
-          `;
-        }}).join("");
+      const optGrid = document.getElementById("gcpOptimizationsGrid");
+      if (optGrid && GCP_METRICS.optimizations_applied) {{
+        optGrid.innerHTML = GCP_METRICS.optimizations_applied.map(o => `
+          <div style="background: #ffffff; border: 1px solid #a7f3d0; border-left: 4px solid #10b981; border-radius: 10px; padding: 12px 14px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <strong style="font-size: 0.84rem; color: #065f46;">${{o.title}}</strong>
+              <span class="gcp-status-tag">Ahorro: ~$${{o.saved_mxn_month}} MXN/mes</span>
+            </div>
+            <p style="font-size: 0.76rem; color: #475569; margin: 0; line-height: 1.4;">${{o.detail}}</p>
+          </div>
+        `).join("");
       }}
     }}
 

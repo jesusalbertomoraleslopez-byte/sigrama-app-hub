@@ -187,6 +187,24 @@
     "auto_start": true
   },
   {
+    "id": "ehs_torreon",
+    "name": "Seguridad, Higiene y Protección Civil (EHS)",
+    "title": "Seguridad, Higiene y Protección Civil (EHS)",
+    "category": "Seguridad & Planta",
+    "description": "Sistema Integral STPS (NOM-019, NOM-002), PIPC Torreón, Control de Extintores, Incidentes, CAPA, Actas PDF y CCTV.",
+    "type": "streamlit",
+    "path": "C:\\Users\\albertol\\.gemini\\antigravity\\scratch\\ehs_sheet_metal_torreon",
+    "entry_file": "app.py",
+    "port": 8512,
+    "url": "http://localhost:8512",
+    "cloud_url": "https://sigrama-ehs-torreon-500497385665.us-central1.run.app/",
+    "icon": "shield-check",
+    "bg_gradient": "linear-gradient(135deg, #EC2024 0%, #111111 100%)",
+    "badge": "STPS / PIPC",
+    "enabled": true,
+    "auto_start": true
+  },
+  {
     "id": "gcp_cost_monitor",
     "name": "Monitoreo de Costos GCP",
     "category": "Administración & Finanzas",
