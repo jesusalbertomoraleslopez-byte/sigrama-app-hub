@@ -27,7 +27,8 @@ if not PROJECT_ID:
 VCPU_HOUR_RATE_USD = 0.0864
 GIB_HOUR_RATE_USD = 0.0090
 USD_TO_MXN_RATE = 20.05  # Tipo de cambio de referencia MXN/USD en facturación GCP
-INITIAL_CREDITS_USD = 5089.0  # Crédito inicial otorgado en la cuenta
+INITIAL_CREDITS_MXN = 5086.37  # Crédito oficial de bienvenida en Pesos (Free Trial Google Cloud)
+INITIAL_CREDITS_USD = round(INITIAL_CREDITS_MXN / USD_TO_MXN_RATE, 2)
 
 # Catálogo maestro de los 13 servicios en Cloud Run y su mapeo con el App Hub
 SIGRAMA_SERVICES_REGISTRY = [
@@ -520,11 +521,13 @@ def get_gcp_cost_summary(force_refresh=False):
     daily_cost_today_usd = total_cost_usd_24h if total_cost_usd_24h > 0 else (daily_history[-1]["cost_usd"] if daily_history else 1.50)
     daily_cost_today_mxn = round(daily_cost_today_usd * USD_TO_MXN_RATE, 2)
 
-    total_spent_estimated = 684.0
-    remaining_credits = round(max(0.0, INITIAL_CREDITS_USD - total_spent_estimated), 2)
-    remaining_credits_mxn = round(remaining_credits * USD_TO_MXN_RATE, 2)
-    monthly_run_rate = max(8.0, total_est_usd_30d)
-    months_remaining = round(remaining_credits / monthly_run_rate, 1)
+    # Datos oficiales de Facturación de Google Cloud de Jesús Morales (Consola de Créditos)
+    remaining_credits_mxn = 3941.80  # Saldo oficial disponible en Pesos (77% restante)
+    total_spent_credits_mxn = round(INITIAL_CREDITS_MXN - remaining_credits_mxn, 2)  # $1,144.57 MXN consumidos
+    remaining_credits_usd = round(remaining_credits_mxn / USD_TO_MXN_RATE, 2)  # ~$196.60 USD
+    total_spent_usd = round(total_spent_credits_mxn / USD_TO_MXN_RATE, 2)
+    monthly_run_rate_mxn = max(200.0, total_est_mxn_30d)
+    months_remaining = round(remaining_credits_mxn / monthly_run_rate_mxn, 1)
 
     result = {
         "project_id": PROJECT_ID,
@@ -539,10 +542,13 @@ def get_gcp_cost_summary(force_refresh=False):
             "cloud_hub_gross_7d_mxn": 401.42,
             "projected_monthly_usd": total_est_usd_30d,
             "projected_monthly_mxn": total_est_mxn_30d,
-            "total_spent_usd": total_spent_estimated,
-            "remaining_credits_usd": remaining_credits,
+            "total_spent_usd": total_spent_usd,
+            "total_spent_mxn": total_spent_credits_mxn,
+            "remaining_credits_usd": remaining_credits_usd,
             "remaining_credits_mxn": remaining_credits_mxn,
+            "initial_credits_mxn": INITIAL_CREDITS_MXN,
             "initial_credits_usd": INITIAL_CREDITS_USD,
+            "credits_remaining_percent": 77,
             "projected_months_left": months_remaining,
             "active_services_count": len(SIGRAMA_SERVICES_REGISTRY),
             "active_projects_count": 1,
